@@ -1,4 +1,5 @@
 import SwiftUI
+import SafariServices
 
 enum Appearance: String, CaseIterable, Identifiable {
     case system, light, dark
@@ -23,12 +24,16 @@ enum Appearance: String, CaseIterable, Identifiable {
 
 enum SettingsRoute: Hashable {
     case currency
-    case legal(LegalDocument)
 }
 
-enum LegalDocument: String, Hashable {
-    case privacy = "privacy-policy"
-    case terms = "terms-of-use"
+/// Privacy policy ed EULA stanno nella repo pubblica (gli stessi URL vanno in App Store Connect):
+/// l'app li apre, non se li porta dentro.
+enum LegalDocument: String, Identifiable {
+    case privacy = "PRIVACY_POLICY.md"
+    case eula = "EULA.md"
+
+    var id: String { rawValue }
+    var url: URL { URL(string: "https://github.com/cldnpl/WhoPays/blob/main/\(rawValue)")! }
 }
 
 /// Impostazioni: poche e utili. Aspetto, valuta, documenti legali.
@@ -38,6 +43,7 @@ struct SettingsView: View {
     @AppStorage(Currency.defaultsKey) private var currencyCode = Currency.deviceDefault.code
     @Binding var path: [SettingsRoute]
     let onReplayTutorial: () -> Void
+    @State private var document: LegalDocument?
 
     private var currency: Currency { Currency(code: currencyCode) }
 
@@ -70,12 +76,12 @@ struct SettingsView: View {
 
                 SettingsSection(title: "About") {
                     VStack(spacing: 0) {
-                        Button { path.append(.legal(.privacy)) } label: {
-                            SettingsRow(title: "Privacy Policy") { SettingsIcon(systemName: "hand.raised") }
+                        Button { document = .privacy } label: {
+                            SettingsRow(title: "Privacy Policy", external: true) { SettingsIcon(systemName: "hand.raised") }
                         }
                         RowDivider()
-                        Button { path.append(.legal(.terms)) } label: {
-                            SettingsRow(title: "Terms of Use (EULA)") { SettingsIcon(systemName: "doc.text") }
+                        Button { document = .eula } label: {
+                            SettingsRow(title: "Terms of Use (EULA)", external: true) { SettingsIcon(systemName: "doc.text") }
                         }
                         RowDivider()
                         Button(action: onReplayTutorial) {
@@ -108,8 +114,11 @@ struct SettingsView: View {
         .navigationDestination(for: SettingsRoute.self) { route in
             switch route {
             case .currency: CurrencyPickerView(selection: $currencyCode)
-            case .legal(let doc): LegalView(document: doc)
             }
+        }
+        .sheet(item: $document) { doc in
+            SafariView(url: doc.url)
+                .ignoresSafeArea()
         }
     }
 }
@@ -156,6 +165,7 @@ private struct SettingsRow<Icon: View>: View {
     let title: String
     var detail: String?
     var chevron = true
+    var external = false
     @ViewBuilder var icon: Icon
 
     var body: some View {
@@ -171,7 +181,7 @@ private struct SettingsRow<Icon: View>: View {
                     .foregroundStyle(Palette.gray)
             }
             if chevron {
-                Image(systemName: "chevron.right")
+                Image(systemName: external ? "arrow.up.right" : "chevron.right")
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(Palette.muted)
             }
@@ -265,12 +275,22 @@ struct CurrencyPickerView: View {
     @Binding var selection: String
     @State private var query = ""
 
+    private var searching: Bool { !query.trimmingCharacters(in: .whitespaces).isEmpty }
+
     private var results: [Currency] {
         let q = query.trimmingCharacters(in: .whitespaces).lowercased()
         guard !q.isEmpty else { return Currency.all }
         return Currency.all.filter {
             $0.name.lowercased().contains(q) || $0.code.lowercased().contains(q) || $0.symbol.lowercased() == q
         }
+    }
+
+    /// In cima: quella scelta, quella del telefono e le più comuni in viaggio.
+    private var popular: [Currency] {
+        var codes = [selection, Currency.deviceDefault.code, "EUR", "USD", "GBP", "CHF", "JPY"]
+        var seen = Set<String>()
+        codes = codes.filter { seen.insert($0).inserted }
+        return codes.map(Currency.init(code:))
     }
 
     var body: some View {
@@ -296,42 +316,15 @@ struct CurrencyPickerView: View {
             .padding(.top, 18)
 
             ScrollView {
-                LazyVStack(spacing: 0) {
-                    ForEach(results) { currency in
-                        Button {
-                            Haptics.select()
-                            selection = currency.code
-                            dismiss()
-                        } label: {
-                            HStack(spacing: 14) {
-                                CurrencyBadge(currency: currency)
-                                VStack(alignment: .leading, spacing: 1) {
-                                    Text(currency.name)
-                                        .textStyle(.personName)
-                                        .foregroundStyle(Palette.ink)
-                                    Text(currency.code)
-                                        .textStyle(TextStyle(face: .medium, size: 13))
-                                        .foregroundStyle(Palette.gray)
-                                }
-                                Spacer()
-                                if currency.code == selection {
-                                    Image(systemName: "checkmark.circle.fill")
-                                        .font(.system(size: 21))
-                                        .foregroundStyle(Palette.pink)
-                                }
-                            }
-                            .padding(.horizontal, 16)
-                            .frame(height: 62)
-                            .contentShape(Rectangle())
-                        }
-                        .buttonStyle(PressableStyle(scale: 0.98))
-                        .accessibilityAddTraits(currency.code == selection ? .isSelected : [])
-                        if currency != results.last {
-                            RowDivider()
-                        }
+                VStack(alignment: .leading, spacing: 0) {
+                    if !searching {
+                        sectionTitle("Popular")
+                        list(popular)
+                        sectionTitle("All currencies")
+                            .padding(.top, 22)
                     }
+                    list(results)
                 }
-                .card(radius: 26)
                 .padding(.horizontal, 20)
                 .padding(.top, 16)
                 .padding(.bottom, 30)
@@ -344,105 +337,67 @@ struct CurrencyPickerView: View {
         .background(BackdropView())
         .toolbar(.hidden, for: .navigationBar)
     }
+
+    private func sectionTitle(_ text: String) -> some View {
+        Text(text)
+            .textStyle(.section)
+            .foregroundStyle(Palette.raspberry)
+            .padding(.leading, 8)
+            .padding(.bottom, 10)
+            .accessibilityAddTraits(.isHeader)
+    }
+
+    private func list(_ currencies: [Currency]) -> some View {
+        LazyVStack(spacing: 0) {
+            ForEach(currencies) { currency in
+                Button {
+                    Haptics.select()
+                    selection = currency.code
+                    dismiss()
+                } label: {
+                    HStack(spacing: 14) {
+                        CurrencyBadge(currency: currency)
+                        VStack(alignment: .leading, spacing: 1) {
+                            Text(currency.name)
+                                .textStyle(.personName)
+                                .foregroundStyle(Palette.ink)
+                            Text(currency.code)
+                                .textStyle(TextStyle(face: .medium, size: 13))
+                                .foregroundStyle(Palette.gray)
+                        }
+                        Spacer()
+                        if currency.code == selection {
+                            Image(systemName: "checkmark.circle.fill")
+                                .font(.system(size: 21))
+                                .foregroundStyle(Palette.pink)
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                    .frame(height: 62)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(PressableStyle(scale: 0.98))
+                .accessibilityAddTraits(currency.code == selection ? .isSelected : [])
+                if currency != currencies.last {
+                    RowDivider()
+                }
+            }
+        }
+        .card(radius: 26)
+    }
 }
 
 // MARK: - Documenti legali
 
-/// Mostra i Markdown in Resources/Legal: gli stessi file si pubblicano per l'App Store.
-struct LegalView: View {
-    let document: LegalDocument
+/// Safari dentro l'app, per privacy policy ed EULA pubblicate nella repo.
+struct SafariView: UIViewControllerRepresentable {
+    let url: URL
 
-    private var blocks: [LegalBlock] { LegalBlock.load(document) }
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            BackButton()
-                .padding(.top, 4)
-                .padding(.leading, 24)
-
-            ScrollView {
-                VStack(alignment: .leading, spacing: 0) {
-                    ForEach(Array(blocks.enumerated()), id: \.offset) { _, block in
-                        block.view
-                    }
-                    if document == .terms {
-                        Link(destination: URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")!) {
-                            HStack(spacing: 8) {
-                                Text("Read Apple's Standard EULA")
-                                Image(systemName: "arrow.up.right").font(.system(size: 13, weight: .semibold))
-                            }
-                            .textStyle(.link)
-                            .foregroundStyle(Palette.raspberryDeep)
-                        }
-                        .padding(.top, 24)
-                    }
-                }
-                .padding(.horizontal, 24)
-                .padding(.top, 14)
-                .padding(.bottom, 40)
-            }
-            .scrollIndicators(.hidden)
-            .plainScrollEdges()
-            .topFade()
-        }
-        .background(BackdropView())
-        .toolbar(.hidden, for: .navigationBar)
-    }
-}
-
-private enum LegalBlock {
-    case title(String)
-    case heading(String)
-    case paragraph(AttributedString)
-    case bullet(AttributedString)
-
-    static func load(_ doc: LegalDocument) -> [LegalBlock] {
-        guard let url = Bundle.main.url(forResource: doc.rawValue, withExtension: "md"),
-              let text = try? String(contentsOf: url, encoding: .utf8) else { return [] }
-        func inline(_ s: String) -> AttributedString {
-            (try? AttributedString(markdown: s)) ?? AttributedString(s)
-        }
-        return text.components(separatedBy: "\n").compactMap { raw in
-            let line = raw.trimmingCharacters(in: .whitespaces)
-            if line.isEmpty { return nil }
-            if line.hasPrefix("## ") { return .heading(String(line.dropFirst(3))) }
-            if line.hasPrefix("# ") { return .title(String(line.dropFirst(2))) }
-            if line.hasPrefix("- ") { return .bullet(inline(String(line.dropFirst(2)))) }
-            return .paragraph(inline(line))
-        }
+    func makeUIViewController(context: Context) -> SFSafariViewController {
+        let vc = SFSafariViewController(url: url)
+        vc.preferredControlTintColor = UIColor(Palette.pink)
+        return vc
     }
 
-    @ViewBuilder
-    var view: some View {
-        switch self {
-        case .title(let t):
-            Text(t)
-                .textStyle(TextStyle(face: .extraBold, size: 34, tracking: -0.02))
-                .foregroundStyle(Palette.ink)
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.top, 10)
-                .accessibilityAddTraits(.isHeader)
-        case .heading(let t):
-            Text(t)
-                .textStyle(TextStyle(face: .bold, size: 18.5, tracking: -0.01))
-                .foregroundStyle(Palette.ink)
-                .padding(.top, 24)
-                .accessibilityAddTraits(.isHeader)
-        case .paragraph(let t):
-            Text(t)
-                .textStyle(TextStyle(face: .regular, size: 16, lineHeight: 23.5))
-                .foregroundStyle(Palette.inkSoft)
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.top, 10)
-        case .bullet(let t):
-            HStack(alignment: .firstTextBaseline, spacing: 10) {
-                Circle().fill(Palette.pink).frame(width: 6, height: 6).alignmentGuide(.firstTextBaseline) { $0[.bottom] + 2 }
-                Text(t)
-                    .textStyle(TextStyle(face: .regular, size: 16, lineHeight: 23.5))
-                    .foregroundStyle(Palette.inkSoft)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            .padding(.top, 9)
-        }
-    }
+    func updateUIViewController(_ vc: SFSafariViewController, context: Context) {}
 }

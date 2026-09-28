@@ -6,7 +6,6 @@ enum CoachTarget: Hashable {
     case plusButton
     case scanOption
     case manualOption
-    case newBillButton
 }
 
 /// Il tutorial della prima volta: lo schermo si scurisce e la patina nera si stringe
@@ -14,14 +13,13 @@ enum CoachTarget: Hashable {
 @Observable
 final class Coach {
     enum Step: Int, CaseIterable {
-        case plus, scan, manual, newBill
+        case plus, scan, manual
 
         var target: CoachTarget {
             switch self {
             case .plus: .plusButton
             case .scan: .scanOption
             case .manual: .manualOption
-            case .newBill: .newBillButton
             }
         }
 
@@ -30,7 +28,6 @@ final class Coach {
             case .plus: "Start here"
             case .scan: "Got the receipt?"
             case .manual: "No receipt?"
-            case .newBill: "You're ready"
             }
         }
 
@@ -38,8 +35,7 @@ final class Coach {
             switch self {
             case .plus: "Tap + when the bill arrives."
             case .scan: "Scan it. WhoPays reads every item, then you tap who had what."
-            case .manual: "Type the total and who paid. It's split equally, change included."
-            case .newBill: "New bill works too. Your bills are saved here, only on this iPhone."
+            case .manual: "Type the total and who paid. It's split equally, change included. Your bills stay on this iPhone."
             }
         }
 
@@ -197,7 +193,7 @@ struct CoachOverlay: View {
                 Button {
                     onNext(step)
                 } label: {
-                    Text(step == .newBill ? "Got it" : step.tapThrough ? "Show me" : "Next")
+                    Text(step == .manual ? "Got it" : step.tapThrough ? "Show me" : "Next")
                         .textStyle(TextStyle(face: .bold, size: 16))
                         .foregroundStyle(.white)
                         .padding(.horizontal, 22)

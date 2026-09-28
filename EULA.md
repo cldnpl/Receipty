@@ -1,8 +1,8 @@
-# Terms of Use (EULA)
+# WhoPays End User License Agreement (EULA)
 
 Last updated: 28 September 2026
 
-WhoPays is licensed to you, not sold. Your use of the app is governed by **Apple's Standard Licensed Application End User License Agreement** ("Standard EULA"), together with the additional terms below. If these additional terms and the Standard EULA disagree, the Standard EULA prevails.
+WhoPays is licensed to you, not sold. Your use of the app is governed by Apple's [Standard Licensed Application End User License Agreement](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/) ("Standard EULA"), together with the additional terms below. If these additional terms and the Standard EULA disagree, the Standard EULA prevails.
 
 ## What WhoPays is
 
@@ -16,7 +16,7 @@ WhoPays is a calculator. It helps a group work out how to split a bill and who s
 
 ## Your content
 
-The bills and names you enter stay on your device and remain yours. See the Privacy Policy for details.
+The bills and names you enter stay on your device and remain yours. See the [Privacy Policy](PRIVACY_POLICY.md) for details.
 
 ## No warranty
 

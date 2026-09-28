@@ -1,4 +1,4 @@
-# Privacy Policy
+# WhoPays Privacy Policy
 
 Last updated: 28 September 2026
 

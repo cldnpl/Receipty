@@ -64,20 +64,6 @@ struct HomeView: View {
         .scrollIndicators(.hidden)
         .plainScrollEdges()
         .topFade(10)
-        .safeAreaInset(edge: .bottom, spacing: 0) {
-            BottomBar(bottomPadding: 4) {
-                Button {
-                    app.showingNewBill = true
-                } label: {
-                    HStack(spacing: 11) {
-                        Image(systemName: "plus").font(.system(size: 19, weight: .semibold))
-                        Text("New bill")
-                    }
-                }
-                .buttonStyle(PrimaryButtonStyle())
-                .coachTarget(.newBillButton)
-            }
-        }
         .background(BackdropView())
         .toolbar(.hidden, for: .navigationBar)
     }
@@ -125,7 +111,7 @@ private struct EmptyRecents: View {
                 Text("No bills yet")
                     .textStyle(.cardTitle)
                     .foregroundStyle(Palette.ink)
-                Text("When the check arrives, tap New bill\nand let the app do the math.")
+                Text("When the check arrives, tap +\nand let the app do the math.")
                     .textStyle(.cardSub)
                     .foregroundStyle(Palette.gray)
                     .multilineTextAlignment(.center)

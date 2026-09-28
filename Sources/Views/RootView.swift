@@ -32,7 +32,7 @@ struct RootView: View {
                     .tabItem { Label("Settings", systemImage: "gearshape") }
                     .tag(AppTab.settings)
                 }
-                .tint(Palette.pink)
+                .tint(Palette.raspberry)
 
                 if app.showingNewBill {
                     Palette.scrim.opacity(0.32)
@@ -80,7 +80,12 @@ struct RootView: View {
         }
         .task {
             #if DEBUG
-            if DemoSeed.screen == "tutorial" { startTutorial() }
+            switch DemoSeed.screen {
+            case "tutorial": startTutorial()
+            case "settings": tab = .settings
+            case "currency": tab = .settings; settingsPath = [.currency]
+            default: break
+            }
             #endif
         }
     }
@@ -122,12 +127,6 @@ struct RootView: View {
         case .scan:
             coach.step = .manual
         case .manual:
-            app.showingNewBill = false
-            Task {
-                try? await Task.sleep(for: .seconds(0.35))
-                coach.step = .newBill
-            }
-        case .newBill:
             endTutorial()
         }
     }

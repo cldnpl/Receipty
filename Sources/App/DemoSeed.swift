@@ -38,7 +38,7 @@ enum DemoSeed {
         let names = ["Cla", "Marco", "Giulia", "Luca"]
 
         func mockupDraft() -> BillDraft {
-            let d = BillDraft(source: .scan)
+            let d = BillDraft(source: .scan, currency: Currency(code: "EUR"))
             d.items = [
                 BillItem(name: "Margherita pizza", cents: 800),
                 BillItem(name: "Carbonara", cents: 1200),
@@ -71,7 +71,7 @@ enum DemoSeed {
         case "sheet":
             app.showingNewBill = true
         case "scan":
-            app.draft = BillDraft(source: .scan)
+            app.draft = BillDraft(source: .scan, currency: Currency(code: "EUR"))
             app.path = [.scan]
         case "review":
             app.draft = mockupDraft()
@@ -93,7 +93,7 @@ enum DemoSeed {
             app.draft = d
             app.path = [.scan, .review, .people, .assign, .payments]
         case "manual":
-            let d = BillDraft(source: .equal)
+            let d = BillDraft(source: .equal, currency: Currency(code: "EUR"))
             names.forEach { d.addPerson(named: $0) }
             d.equalTotalText = "70.00"
             d.paidText[d.people[0].id] = "70"
@@ -108,7 +108,7 @@ enum DemoSeed {
             app.path = [.scan, .review, .people, .assign, .payments, .result]
         case "change", "changeresult":
             // Il caso del resto: conto da €52 in 4, Claudia mette 20 e Marco 40.
-            let d = BillDraft(source: .equal)
+            let d = BillDraft(source: .equal, currency: Currency(code: "EUR"))
             ["Claudia", "Marco", "Olga", "Kekko"].forEach { d.addPerson(named: $0) }
             d.equalTotalText = "52"
             d.paidText[d.people[0].id] = "20"
