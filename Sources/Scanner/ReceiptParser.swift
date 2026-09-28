@@ -23,6 +23,12 @@ struct ParsedReceipt {
 /// Regola di fondo: nel dubbio non si indovina. Una voce di cui l'OCR non è sicuro
 /// viene segnalata, e chi usa l'app la conferma prima di andare avanti.
 enum ReceiptParser {
+    /// Cifre decimali della valuta del conto: 2 di solito, 0 per yen, won & co.
+    /// (TaskLocal: il parser gira in un task a parte, così non serve passarlo ovunque).
+    @TaskLocal static var minorDigits = 2
+
+    private static let isoCodes = Set(Locale.commonISOCurrencyCodes.map { $0.uppercased() })
+    private static let localMarkers: Set<String> = ["KR", "ZŁ", "KČ", "FT", "LEI", "ЛВ", "DIN", "RS", "TL", "DH", "RM", "RP", "DKK", "SFR"]
 
     struct Line {
         var fragments: [OCRFragment]
@@ -230,18 +236,28 @@ enum ReceiptParser {
     }
 
     private static func isTrailingMarker(_ t: String) -> Bool {
-        let u = t.uppercased()
-        if ["€", "EUR", "EURO", "*", "-", "B", "C", "D", "E", "A", "S", "N", "V", "IVA"].contains(u) { return true }
+        let u = t.uppercased().trimmingCharacters(in: CharacterSet(charactersIn: "."))
+        if ["EURO", "*", "-", "B", "C", "D", "E", "A", "S", "N", "V", "IVA", "TAX"].contains(u) { return true }
+        if isoCodes.contains(u) || localMarkers.contains(u) { return true }
+        if !u.isEmpty, u.unicodeScalars.allSatisfy({ $0.properties.generalCategory == .currencySymbol }) { return true }
         if u.hasSuffix("%"), u.dropLast().allSatisfy({ $0.isNumber || $0 == "," || $0 == "." }) { return true }
         return false
     }
 
-    /// "8,00" → 800. "€12.00" → 1200. "7,O0" → 700 (corretto). "12" → nil (manca la parte decimale).
+    /// "8,00" → 800. "€12.00", "$12.00", "CHF12.00", "S$12.00" → 1200. "7,O0" → 700 (corretto).
+    /// "12" → nil (manca la parte decimale), a meno che la valuta non abbia decimali: "¥1,200" → 120000.
     static func parseAmount(_ token: String) -> (cents: Int, corrected: Bool)? {
-        var t = token
-        for marker in ["€", "EUR", "Eur", "eur"] { t = t.replacingOccurrences(of: marker, with: "") }
-        t = t.trimmingCharacters(in: CharacterSet(charactersIn: "*:;"))
+        var t = token.trimmingCharacters(in: CharacterSet(charactersIn: "*:;"))
+        // Prefissi tipo "US$", "S$", "HK$": le lettere vanno via solo se attaccate a un simbolo.
+        if let m = t.firstMatch(of: /^[A-Za-z]{1,3}(?=\p{Sc})/) { t.removeSubrange(m.range) }
+        t = String(t.unicodeScalars.filter { $0.properties.generalCategory != .currencySymbol })
+        // Codici ISO attaccati al numero: "CHF12.50", "12.50EUR".
+        if t.count > 3 {
+            let head = String(t.prefix(3)).uppercased(), tail = String(t.suffix(3)).uppercased()
+            if isoCodes.contains(head) { t.removeFirst(3) } else if isoCodes.contains(tail) { t.removeLast(3) }
+        }
         guard !t.isEmpty else { return nil }
+        if minorDigits == 0, let whole = wholeUnits(t) { return (whole * 100, false) }
 
         let fixes: [Character: Character] = ["O": "0", "o": "0", "D": "0", "Q": "0", "l": "1", "I": "1",
                                              "|": "1", "i": "1", "S": "5", "s": "5", "B": "8", "Z": "2", "z": "2"]
@@ -276,6 +292,14 @@ enum ReceiptParser {
               let w = Int(whole), let f = Int(fraction) else { return nil }
         let cents = w * 100 + f
         return (negative ? -cents : cents, corrected)
+    }
+
+    /// Importi senza decimali per yen, won & co.: "1,200", "1.200", "850". Sotto 50 no:
+    /// su uno scontrino in yen un "12" è un tavolo, non un prezzo.
+    private static func wholeUnits(_ t: String) -> Int? {
+        guard t.firstMatch(of: /^\d{1,3}([.,]\d{3})+$|^\d{2,8}$/) != nil,
+              let value = Int(t.filter(\.isNumber)), value >= 50 else { return nil }
+        return value
     }
 
     // MARK: Quantità

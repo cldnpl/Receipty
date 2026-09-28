@@ -68,8 +68,22 @@ struct Settlement: Codable, Hashable {
     var lines: [Line]
     var transfers: [Transfer]
     var changeSplit: [ChangeShare] = []
+    var currency = Currency(code: "EUR")
 
     var change: Int { changeSplit.reduce(0) { $0 + $1.cents } }
+}
+
+extension Settlement {
+    private enum CodingKeys: String, CodingKey { case total, lines, transfers, changeSplit, currency }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        total = try c.decode(Int.self, forKey: .total)
+        lines = try c.decode([Line].self, forKey: .lines)
+        transfers = try c.decode([Transfer].self, forKey: .transfers)
+        changeSplit = try c.decodeIfPresent([ChangeShare].self, forKey: .changeSplit) ?? []
+        currency = try c.decodeIfPresent(Currency.self, forKey: .currency) ?? Currency(code: "EUR")
+    }
 }
 
 struct SavedBill: Codable, Hashable, Identifiable {

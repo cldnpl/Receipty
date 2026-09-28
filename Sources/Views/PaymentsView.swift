@@ -3,6 +3,7 @@ import SwiftUI
 /// "Chi ha pagato?": quanto ha messo ciascuno. Con lo scontrino il totale è già noto,
 /// nella divisione in parti uguali si scrive qui in alto.
 struct PaymentsView: View {
+    @Environment(\.currency) private var currency
     @Environment(AppModel.self) private var app
     @Bindable var draft: BillDraft
     @FocusState private var focus: Focus?
@@ -72,7 +73,9 @@ struct PaymentsView: View {
         .onChange(of: focus) { old, _ in
             // "52" diventa "52.00" quando si esce dal campo del totale.
             if old == .total, let cents = Money.parse(draft.equalTotalText), cents > 0 {
-                draft.equalTotalText = String(format: "%d.%02d", cents / 100, cents % 100)
+                draft.equalTotalText = currency.minorDigits == 0
+                    ? String(cents / 100)
+                    : String(format: "%d.%02d", cents / 100, cents % 100)
             }
         }
     }
@@ -105,13 +108,13 @@ struct PaymentsView: View {
         let paid = draft.paidTotal
         if total == 0 { return ("Enter the bill total", false) }
         if paid == total { return ("It all adds up", true) }
-        if paid < total { return ("\(Money.format(total - paid)) still missing", false) }
+        if paid < total { return ("\(Money.format(total - paid, currency)) still missing", false) }
         let change = paid - total
         // Più di €100 di resto e più del conto stesso: quasi sempre un importo scritto male.
         if change > 10_000 && change > total {
-            return ("\(Money.format(change)) in change? Check the amounts", false)
+            return ("\(Money.format(change, currency)) in change? Check the amounts", false)
         }
-        return ("\(Money.format(change)) comes back in change", true)
+        return ("\(Money.format(change, currency)) comes back in change", true)
     }
 
     @ViewBuilder
@@ -122,7 +125,7 @@ struct PaymentsView: View {
                 .foregroundStyle(Palette.raspberry)
 
             if draft.source.isItemized {
-                Text(Money.format(draft.total))
+                Text(Money.format(draft.total, currency))
                     .textStyle(.bigAmount)
                     .foregroundStyle(Palette.ink)
                     .padding(.top, 5)
@@ -132,7 +135,7 @@ struct PaymentsView: View {
                     .padding(.top, 6)
             } else {
                 HStack(alignment: .firstTextBaseline, spacing: 6.5) {
-                    Text("€")
+                    Text(currency.symbol)
                         .textStyle(TextStyle(face: .extraBold, size: 44, tracking: -0.02))
                         .foregroundStyle(Palette.pink)
                     TextField(text: $draft.equalTotalText, prompt: Text("0.00").foregroundStyle(Palette.fieldPlaceholder.opacity(0.6))) {
@@ -143,7 +146,7 @@ struct PaymentsView: View {
                     .keyboardType(.decimalPad)
                     .focused($focus, equals: .total)
                     .onChange(of: draft.equalTotalText) { _, new in
-                        let clean = Money.sanitizeInput(new)
+                        let clean = Money.sanitizeInput(new, decimals: currency.minorDigits > 0)
                         if clean != new { draft.equalTotalText = clean }
                     }
                 }
@@ -169,11 +172,12 @@ struct PaymentsView: View {
         guard draft.total > 0, n > 0 else { return "Split \(n) ways: enter the total" }
         let each = Double(draft.total) / Double(n)
         let rounded = Int(each.rounded())
-        return "Split \(n) ways: \(Money.format(rounded)) each"
+        return "Split \(n) ways: \(Money.format(rounded, currency)) each"
     }
 }
 
 private struct PayerRow: View {
+    @Environment(\.currency) private var currency
     let person: Person
     let consumed: Int?
     @Binding var text: String
@@ -189,7 +193,7 @@ private struct PayerRow: View {
                     .foregroundStyle(Palette.ink)
                     .lineLimit(1)
                 if let consumed {
-                    Text("Ordered\n\(Money.format(consumed))")
+                    Text("Ordered\n\(Money.format(consumed, currency))")
                         .textStyle(TextStyle(face: .medium, size: 12, lineHeight: 14.3))
                         .foregroundStyle(Palette.gray)
                 }
@@ -211,6 +215,6 @@ private struct PayerRow: View {
         .padding(.leading, 12)
         .padding(.trailing, 8)
         .frame(height: consumed == nil ? 62 : 64)
-        .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Color.white.opacity(0.78)))
+        .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Palette.cardSoft))
     }
 }

@@ -8,17 +8,24 @@ import CoreImage.CIFilterBuiltins
 enum ReceiptReader {
     enum ReadError: Error { case unreadableImage }
 
-    static func read(_ image: UIImage) async throws -> ParsedReceipt {
-        try await Task.detached(priority: .userInitiated) {
-            guard let upright = normalized(image) else { throw ReadError.unreadableImage }
-            let cropped = cropToDocument(upright)
-            var parsed = ReceiptParser.parse(try recognize(cropped))
-            // Se il ritaglio ha tagliato male, meglio rileggere la foto intera.
-            if parsed.items.isEmpty, cropped !== upright {
-                parsed = ReceiptParser.parse(try recognize(upright))
+    static func read(_ image: UIImage, currency: Currency = .current) async throws -> ParsedReceipt {
+        let digits = currency.minorDigits
+        return try await Task.detached(priority: .userInitiated) {
+            try ReceiptParser.$minorDigits.withValue(digits) {
+                try readSync(image)
             }
-            return parsed
         }.value
+    }
+
+    private static func readSync(_ image: UIImage) throws -> ParsedReceipt {
+        guard let upright = normalized(image) else { throw ReadError.unreadableImage }
+        let cropped = cropToDocument(upright)
+        var parsed = ReceiptParser.parse(try recognize(cropped))
+        // Se il ritaglio ha tagliato male, meglio rileggere la foto intera.
+        if parsed.items.isEmpty, cropped !== upright {
+            parsed = ReceiptParser.parse(try recognize(upright))
+        }
+        return parsed
     }
 
     /// Foto dritta (niente orientamento EXIF) e non più grande del necessario.

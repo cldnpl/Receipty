@@ -37,7 +37,6 @@ targets:
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: false
         ITSAppUsesNonExemptEncryption: false
-        UIUserInterfaceStyle: Light
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.cldnpl.whopays

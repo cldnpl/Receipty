@@ -42,7 +42,7 @@ struct BackButton: View {
                 .font(.system(size: 17, weight: .medium))
                 .foregroundStyle(Palette.ink)
                 .frame(width: Metrics.backSize, height: Metrics.backSize)
-                .background(Circle().fill(.white).shadow(color: Palette.shadow.opacity(0.10), radius: 12, y: 5))
+                .background(Circle().fill(Palette.card).shadow(color: Palette.shadow.opacity(0.10), radius: 12, y: 5))
         }
         .buttonStyle(PressableStyle(scale: 0.92))
         .accessibilityLabel("Back")
@@ -60,7 +60,7 @@ struct CircleIconButton: View {
                 .font(.system(size: 21, weight: .regular))
                 .foregroundStyle(Palette.pink)
                 .frame(width: size, height: size)
-                .background(Circle().fill(.white).shadow(color: Palette.shadow.opacity(0.12), radius: 16, y: 7))
+                .background(Circle().fill(Palette.card).shadow(color: Palette.shadow.opacity(0.12), radius: 16, y: 7))
         }
         .buttonStyle(PressableStyle(scale: 0.92))
     }
@@ -250,7 +250,7 @@ struct StatusPill: View {
             .contentTransition(.numericText())
             .padding(.horizontal, 16)
             .frame(height: 33.5)
-            .background(Capsule().fill(Color(hex: 0xFFF8FA)))
+            .background(Capsule().fill(Palette.pillFill))
             .animation(.snappy, value: text)
     }
 }
@@ -272,13 +272,16 @@ struct Caption: View {
 
 /// Campo importo "€ 30" delle righe "Chi ha pagato".
 struct AmountField: View {
+    @Environment(\.currency) private var currency
     @Binding var text: String
     var width: CGFloat = 104
 
     var body: some View {
         HStack(spacing: 4) {
-            Text("€")
+            Text(currency.symbol)
                 .font(.custom(Inter.semibold.rawValue, size: 17))
+                .lineLimit(1)
+                .fixedSize()
                 .foregroundStyle(Palette.raspberry)
             TextField(text: $text, prompt: Text("0").foregroundStyle(Palette.fieldPlaceholder)) {
                 Text("Amount")
@@ -288,7 +291,7 @@ struct AmountField: View {
             .multilineTextAlignment(.trailing)
             .keyboardType(.decimalPad)
             .onChange(of: text) { _, new in
-                let clean = Money.sanitizeInput(new)
+                let clean = Money.sanitizeInput(new, decimals: currency.minorDigits > 0)
                 if clean != new { text = clean }
             }
         }

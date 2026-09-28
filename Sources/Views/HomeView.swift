@@ -13,6 +13,7 @@ struct HomeView: View {
                         .accessibilityAddTraits(.isHeader)
                     Spacer(minLength: 12)
                     CircleIconButton(systemName: "plus") { app.showingNewBill = true }
+                        .coachTarget(.plusButton)
                         .padding(.top, 8)
                         .accessibilityLabel("New bill")
                 }
@@ -74,6 +75,7 @@ struct HomeView: View {
                     }
                 }
                 .buttonStyle(PrimaryButtonStyle())
+                .coachTarget(.newBillButton)
             }
         }
         .background(BackdropView())
@@ -101,7 +103,7 @@ private struct BillCard: View {
                 Image(systemName: "checkmark.circle")
                     .font(.system(size: 21, weight: .medium))
                     .foregroundStyle(Palette.check)
-                Text(Money.format(bill.settlement.total))
+                Text(Money.format(bill.settlement.total, bill.settlement.currency))
                     .textStyle(.cardMeta)
                     .foregroundStyle(Palette.gray)
             }
@@ -111,7 +113,7 @@ private struct BillCard: View {
         .frame(height: 99)
         .card()
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(DateText.short(bill.date)), \(bill.names), \(Money.format(bill.settlement.total)), settled")
+        .accessibilityLabel("\(DateText.short(bill.date)), \(bill.names), \(Money.format(bill.settlement.total, bill.settlement.currency)), settled")
     }
 }
 
@@ -133,7 +135,7 @@ private struct EmptyRecents: View {
         .padding(.vertical, 30)
         .background(
             RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous)
-                .fill(Color.white.opacity(0.55))
+                .fill(Palette.cardGhost)
         )
         .overlay(
             RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous)

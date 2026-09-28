@@ -50,6 +50,7 @@ struct AssignView: View {
 }
 
 private struct AssignCard: View {
+    @Environment(\.currency) private var currency
     let item: BillItem
     @Bindable var draft: BillDraft
 
@@ -65,23 +66,23 @@ private struct AssignCard: View {
                         .foregroundStyle(Palette.ink)
                     if item.quantity > 1 {
                         HStack(spacing: 6) {
-                            Text("\(item.quantity) × \(Money.format(item.cents / item.quantity))")
+                            Text("\(item.quantity) × \(Money.format(item.cents / item.quantity, currency))")
                                 .foregroundStyle(Palette.gray)
                             Button("Split") { split() }
-                                .foregroundStyle(Color(hex: 0xE388A7))
+                                .foregroundStyle(Palette.pinkText)
                         }
                         .textStyle(.perHead)
                     }
                 }
                 Spacer(minLength: 8)
                 VStack(alignment: .trailing, spacing: 3) {
-                    Text(Money.format(item.cents))
+                    Text(Money.format(item.cents, currency))
                         .textStyle(.itemTitle)
                         .foregroundStyle(Palette.ink)
                     if assigned.count > 1 {
-                        Text("\(Money.format(Int((Double(item.cents) / Double(assigned.count)).rounded()))) each")
+                        Text("\(Money.format(Int((Double(item.cents) / Double(assigned.count)).rounded()), currency)) each")
                             .textStyle(.perHead)
-                            .foregroundStyle(Color(hex: 0xE388A7))
+                            .foregroundStyle(Palette.pinkText)
                             .contentTransition(.numericText())
                             .transition(.opacity.combined(with: .move(edge: .top)))
                     }
@@ -110,7 +111,7 @@ private struct AssignCard: View {
                 } label: {
                     Text("All")
                         .textStyle(.chip)
-                        .foregroundStyle(everyone ? Color.white : Color(hex: 0x652B41))
+                        .foregroundStyle(everyone ? Color.white : Palette.chipText)
                         .padding(.horizontal, 14)
                         .frame(height: 33.5)
                         .background(Capsule().fill(everyone ? Palette.pink : Color.clear))
@@ -163,6 +164,7 @@ private struct PersonChip: View {
 
 /// Quanto sta spendendo ciascuno, mentre si assegnano le voci.
 private struct RunningTotals: View {
+    @Environment(\.currency) private var currency
     let draft: BillDraft
 
     var body: some View {
@@ -172,7 +174,7 @@ private struct RunningTotals: View {
                 ForEach(draft.people) { person in
                     HStack(spacing: 8) {
                         Avatar(person: person, size: 22)
-                        Text((owed[person.id] ?? 0) == 0 ? "€0" : Money.format(owed[person.id] ?? 0))
+                        Text(Money.formatCompact(owed[person.id] ?? 0, currency))
                             .textStyle(TextStyle(face: .semibold, size: 15))
                             .foregroundStyle(Palette.ink)
                             .contentTransition(.numericText())

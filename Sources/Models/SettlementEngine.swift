@@ -8,7 +8,7 @@ enum SettlementEngine {
     /// Quanto ha consumato ciascuno: ogni voce si divide in parti uguali tra chi l'ha presa.
     /// Le frazioni di centesimo si assegnano col metodo del resto più grande, così la somma
     /// delle quote è esattamente il totale delle voci.
-    static func itemizedShares(items: [BillItem], people: [UUID]) -> [UUID: Int] {
+    static func itemizedShares(items: [BillItem], people: [UUID], unit: Int = 1) -> [UUID: Int] {
         var exact = Dictionary(uniqueKeysWithValues: people.map { ($0, 0.0) })
         var total = 0
         for item in items {
@@ -18,20 +18,26 @@ enum SettlementEngine {
             let each = Double(item.cents) / Double(who.count)
             for id in who { exact[id, default: 0] += each }
         }
-        return roundPreservingSum(exact, order: people, total: total, priority: [:])
+        return roundPreservingSum(exact, order: people, total: total, priority: [:], unit: unit)
     }
 
     /// Divisione in parti uguali. I centesimi che avanzano (es. €100 in 3) vanno a chi ha
     /// pagato di più: così chi deve dare soldi paga cifre tonde.
-    static func equalShares(total: Int, people: [UUID], paid: [UUID: Int]) -> [UUID: Int] {
+    static func equalShares(total: Int, people: [UUID], paid: [UUID: Int], unit: Int = 1) -> [UUID: Int] {
         guard !people.isEmpty else { return [:] }
         let each = Double(total) / Double(people.count)
         let exact = Dictionary(uniqueKeysWithValues: people.map { ($0, each) })
-        return roundPreservingSum(exact, order: people, total: total, priority: paid)
+        return roundPreservingSum(exact, order: people, total: total, priority: paid, unit: unit)
     }
 
-    static func roundPreservingSum(_ exact: [UUID: Double], order: [UUID], total: Int, priority: [UUID: Int]) -> [UUID: Int] {
+    /// - Parameter unit: il passo in centesimi (1, oppure 100 per le valute senza decimali:
+    ///   1000 yen in 3 fanno 334 + 333 + 333, non 333,33).
+    static func roundPreservingSum(_ exact: [UUID: Double], order: [UUID], total: Int, priority: [UUID: Int], unit: Int = 1) -> [UUID: Int] {
         guard !order.isEmpty else { return [:] }
+        if unit > 1, total % unit == 0 {
+            let scaled = exact.mapValues { $0 / Double(unit) }
+            return roundPreservingSum(scaled, order: order, total: total / unit, priority: priority).mapValues { $0 * unit }
+        }
         var result: [UUID: Int] = [:]
         var assigned = 0
         for id in order {

@@ -3,13 +3,6 @@ import Foundation
 /// Tutti gli importi dell'app sono centesimi interi: niente errori di arrotondamento
 /// tra quello che si vede e quello che si somma.
 enum Money {
-    /// 2230 → "€22.30", 123450 → "€1,234.50".
-    static func format(_ cents: Int, symbol: Bool = true) -> String {
-        let sign = cents < 0 ? "−" : ""
-        let value = abs(cents)
-        return sign + (symbol ? "€" : "") + grouped(value / 100) + "." + String(format: "%02d", value % 100)
-    }
-
     /// Per i campi di testo: 1200 → "12", 1250 → "12.50".
     static func editable(_ cents: Int) -> String {
         let value = abs(cents)
@@ -19,9 +12,7 @@ enum Money {
 
     /// Legge quello che una persona scrive, con la virgola o col punto: "12", "12,5", "12.50", "€ 1,234.50".
     static func parse(_ text: String) -> Int? {
-        var t = text.replacingOccurrences(of: "€", with: "")
-            .replacingOccurrences(of: " ", with: "")
-            .replacingOccurrences(of: "\u{00A0}", with: "")
+        var t = String(text.unicodeScalars.filter { !CharacterSet.whitespaces.contains($0) && $0.properties.generalCategory != .currencySymbol })
         guard !t.isEmpty else { return nil }
         var negative = false
         if t.hasPrefix("-") || t.hasPrefix("−") {
@@ -54,8 +45,8 @@ enum Money {
     }
 
     /// Filtra quello che si digita in un campo importo: cifre e un solo separatore (mostrato come
-    /// punto, qualunque sia la tastiera), al massimo due decimali.
-    static func sanitizeInput(_ text: String) -> String {
+    /// punto, qualunque sia la tastiera), al massimo due decimali. Niente decimali per yen & co.
+    static func sanitizeInput(_ text: String, decimals allowDecimals: Bool = true) -> String {
         var out = ""
         var seenSeparator = false
         var decimals = 0
@@ -67,20 +58,10 @@ enum Money {
                 }
                 if out.count >= 7 && !seenSeparator { continue }
                 out.append(ch)
-            } else if (ch == "," || ch == "."), !seenSeparator {
+            } else if allowDecimals, ch == "," || ch == ".", !seenSeparator {
                 seenSeparator = true
                 out.append(out.isEmpty ? "0." : ".")
             }
-        }
-        return out
-    }
-
-    private static func grouped(_ n: Int) -> String {
-        let digits = Array(String(n))
-        var out = ""
-        for (i, ch) in digits.enumerated() {
-            if i > 0 && (digits.count - i) % 3 == 0 { out.append(",") }
-            out.append(ch)
         }
         return out
     }

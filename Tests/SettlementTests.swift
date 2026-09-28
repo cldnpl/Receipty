@@ -99,9 +99,15 @@ final class SettlementTests: XCTestCase {
     }
 
     func testMoneyFormatting() {
-        XCTAssertEqual(Money.format(2230), "€22.30")
-        XCTAssertEqual(Money.format(123450), "€1,234.50")
-        XCTAssertEqual(Money.format(5), "€0.05")
+        let eur = Currency(code: "EUR")
+        XCTAssertEqual(Money.format(2230, eur), "€22.30")
+        XCTAssertEqual(Money.format(123450, eur), "€1,234.50")
+        XCTAssertEqual(Money.format(5, eur), "€0.05")
+        XCTAssertEqual(Money.format(-2230, eur), "−€22.30")
+        XCTAssertEqual(Money.format(120000, Currency(code: "JPY")), "¥1,200")
+        XCTAssertEqual(Money.format(999, Currency(code: "USD")), "$9.99")
+        XCTAssertEqual(Money.format(1500, Currency(code: "GBP")), "£15.00")
+        XCTAssertEqual(Money.formatCompact(0, eur), "€0")
         XCTAssertEqual(Money.parse("1,234.50"), 123450)
         XCTAssertEqual(Money.parse("12"), 1200)
         XCTAssertEqual(Money.parse("12,5"), 1250)
@@ -114,10 +120,31 @@ final class SettlementTests: XCTestCase {
         XCTAssertEqual(Money.editable(1250), "12.50")
     }
 
+    /// Valute senza decimali: ¥1000 in 3 fa 334 + 333 + 333 yen, mai frazioni di yen.
+    func testZeroDecimalCurrencySplitsInWholeUnits() {
+        let draft = BillDraft(source: .equal, currency: Currency(code: "JPY"))
+        draft.equalTotalText = "1000"
+        let p = ["Aki", "Ben", "Chie"].map { draft.addPerson(named: $0)! }
+        draft.paidText[p[0].id] = "1000"
+        let owed = draft.owed
+        XCTAssertEqual(owed.values.reduce(0, +), 100_000)
+        XCTAssertTrue(owed.values.allSatisfy { $0 % 100 == 0 })
+        XCTAssertEqual(owed[p[0].id], 33_400)
+        let s = draft.settlement()
+        XCTAssertEqual(s.currency.code, "JPY")
+        XCTAssertEqual(s.transfers.map(\.cents), [33_300, 33_300])
+    }
+
+    func testCurrencyListIsUsable() {
+        XCTAssertGreaterThan(Currency.all.count, 50)
+        XCTAssertTrue(Currency.all.allSatisfy { $0.minorDigits == 0 || $0.minorDigits == 2 })
+        XCTAssertEqual(Set(Currency.all.map(\.code)).count, Currency.all.count)
+    }
+
     // MARK: Resto
 
     private func equalBill(total: String, _ payers: [(String, String)], others: [String]) -> Settlement {
-        let draft = BillDraft(source: .equal)
+        let draft = BillDraft(source: .equal, currency: Currency(code: "EUR"))
         draft.equalTotalText = total
         for (name, amount) in payers {
             let p = draft.addPerson(named: name)!

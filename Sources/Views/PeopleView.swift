@@ -47,10 +47,10 @@ struct PeopleView: View {
                                     } label: {
                                         Text("+ \(recent)")
                                             .textStyle(TextStyle(face: .medium, size: 15.5))
-                                            .foregroundStyle(Color(hex: 0x652B41))
+                                            .foregroundStyle(Palette.chipText)
                                             .padding(.horizontal, 16.5)
                                             .frame(height: 39)
-                                            .background(Capsule().fill(Color(hex: 0xFFDFEA)))
+                                            .background(Capsule().fill(Palette.chipFill))
                                             .overlay(DashedCapsule())
                                     }
                                     .buttonStyle(PressableStyle(scale: 0.94))
@@ -132,15 +132,15 @@ struct PeopleView: View {
                 typing = true
             }
                 .textStyle(.pillLabel)
-                .foregroundStyle(.white)
+                .foregroundStyle(Palette.inverseText)
                 .padding(.horizontal, 17.5)
                 .frame(height: 47.5)
-                .background(Capsule().fill(Palette.ink))
+                .background(Capsule().fill(Palette.inverseFill))
                 .buttonStyle(PressableStyle(scale: 0.94))
         }
         .padding(.trailing, 6)
         .frame(height: 59)
-        .background(Capsule().fill(.white).shadow(color: Palette.shadow.opacity(0.07), radius: 16, y: 7))
+        .background(Capsule().fill(Palette.card).shadow(color: Palette.shadow.opacity(0.07), radius: 16, y: 7))
     }
 
     private func add(_ raw: String) {
@@ -174,6 +174,6 @@ private struct PersonRow: View {
         .padding(.leading, 12)
         .padding(.trailing, 8)
         .frame(height: 60)
-        .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(Color.white.opacity(0.8)))
+        .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(Palette.cardSoft))
     }
 }

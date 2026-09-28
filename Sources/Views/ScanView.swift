@@ -228,7 +228,7 @@ struct ScanView: View {
         phase = .reading(image)
         camera.stop()
         let started = Date()
-        let parsed = try? await ReceiptReader.read(image)
+        let parsed = try? await ReceiptReader.read(image, currency: draft.currency)
         // La lettura è velocissima: l'animazione deve restare il tempo di capire cosa succede.
         let elapsed = Date().timeIntervalSince(started)
         if elapsed < 1.1 { try? await Task.sleep(for: .seconds(1.1 - elapsed)) }

@@ -5,7 +5,6 @@ struct WhoPaysApp: App {
     var body: some Scene {
         WindowGroup {
             RootView()
-                .preferredColorScheme(.light)
                 .dynamicTypeSize(...DynamicTypeSize.xxLarge)
         }
     }

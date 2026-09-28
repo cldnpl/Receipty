@@ -10,81 +10,134 @@ extension Color {
     }
 }
 
-/// Colori campionati dal mockup (Figma "Chi paga?").
+/// Colori campionati dal mockup (Figma "Chi paga?"), con il loro gemello per il tema scuro:
+/// al posto del rosa pieno, un prugna scurissimo che in basso si accende di lampone.
 enum Palette {
-    static let ink = Color(hex: 0x1A1A1A)
-    static let inkSoft = Color(hex: 0x4C4346)
-    static let gray = Color(hex: 0x58585C)
-    static let muted = Color(hex: 0x867A7E)
+    static let ink = Color(light: 0x1A1A1A, dark: 0xF7EEF2)
+    static let inkSoft = Color(light: 0x4C4346, dark: 0xCDB9C1)
+    static let gray = Color(light: 0x58585C, dark: 0xAE9FA6)
+    static let muted = Color(light: 0x867A7E, dark: 0x8F7F87)
 
-    static let raspberry = Color(hex: 0x822F4B)
-    static let raspberryDeep = Color(hex: 0x6F2441)
-    static let warning = Color(hex: 0xA04262)
+    static let raspberry = Color(light: 0x822F4B, dark: 0xF59BBD)
+    static let raspberryDeep = Color(light: 0x6F2441, dark: 0xF7A8C6)
+    static let warning = Color(light: 0xA04262, dark: 0xFF8FB3)
 
     static let pink = Color(hex: 0xF57FA7)
-    static let pinkIcon = Color(hex: 0xF083A6)
+    static let pinkIcon = Color(light: 0xF083A6, dark: 0xF58DB1)
+    static let pinkText = Color(light: 0xE388A7, dark: 0xF58DB1)
     static let pinkLight = Color(hex: 0xFA9ABA)
-    static let pinkSoft = Color(hex: 0xFEE2E9)
-    static let pinkMist = Color(hex: 0xFFF2F5)
-    static let flag = Color(hex: 0xFFEAEF)
-    static let hairline = Color(hex: 0xF1E5E9)
-    static let dashed = Color(hex: 0xFDBAD0)
-    static let dashedSoft = Color(hex: 0xE6CED6)
-    static let placeholder = Color(hex: 0xD9A2B5)
+    static let pinkSoft = Color(light: 0xFEE2E9, dark: 0x3A2230)
+    static let pinkMist = Color(light: 0xFFF2F5, dark: 0x2E1D26)
+    static let flag = Color(light: 0xFFEAEF, dark: 0x3D1F2D)
+    static let hairline = Color(light: 0xF1E5E9, dark: 0x3A2A31)
+    static let dashed = Color(light: 0xFDBAD0, dark: 0x6B3A50)
+    static let dashedSoft = Color(light: 0xE6CED6, dark: 0x5A3A48)
+    static let placeholder = Color(light: 0xD9A2B5, dark: 0x8C6B79)
+    static let chipText = Color(light: 0x652B41, dark: 0xF7B6CD)
+    static let chipFill = Color(light: 0xFFDFEA, dark: 0x3A2230)
 
-    static let fieldFill = Color(hex: 0xFFF6F9)
-    static let fieldBorder = Color(hex: 0xF4DEE5)
-    static let fieldPlaceholder = Color(hex: 0xB28D9A)
+    static let fieldFill = Color(light: 0xFFF6F9, dark: 0x2A1B22)
+    static let fieldBorder = Color(light: 0xF4DEE5, dark: 0x4A2F3C)
+    static let fieldPlaceholder = Color(light: 0xB28D9A, dark: 0x8C6F7B)
 
-    static let disabledFill = Color(hex: 0xFA93B6)
-    static let disabledText = Color(hex: 0xFFCDDE)
+    static let disabledFill = Color(light: 0xFA93B6, dark: 0x5A2E42)
+    static let disabledText = Color(light: 0xFFCDDE, dark: 0xA07488)
 
-    static let check = Color(hex: 0x2EB889)
+    static let check = Color(light: 0x2EB889, dark: 0x3CCB98)
     static let success = Color(hex: 0x22C090)
-    static let successText = Color(hex: 0x2B8969)
-    static let arrow = Color(hex: 0xE686A7)
+    static let successText = Color(light: 0x2B8969, dark: 0x4ED6A4)
+    static let arrow = Color(light: 0xE686A7, dark: 0xF58DB1)
 
-    static let sheetTop = Color(hex: 0xFFFAFC)
-    static let sheetBottom = Color(hex: 0xFEF5F8)
-    static let handle = Color(hex: 0xF2C6D5)
+    /// Superfici: card piene, righe semitrasparenti, pillole chiare.
+    static let card = Color(light: 0xFFFFFF, dark: 0x251A21)
+    static let cardSoft = Color(light: 0xFFFFFF, dark: 0x251A21, lightOpacity: 0.8, darkOpacity: 0.85)
+    static let cardGhost = Color(light: 0xFFFFFF, dark: 0x251A21, lightOpacity: 0.55, darkOpacity: 0.5)
+    static let pillFill = Color(light: 0xFFF8FA, dark: 0x2C1E26)
+    /// Il nero dei bottoni "Aggiungi" e "Fatto": nel tema scuro diventa chiaro.
+    static let inverseFill = Color(light: 0x1A1A1A, dark: 0xF7EEF2)
+    static let inverseText = Color(light: 0xFFFFFF, dark: 0x1A1A1A)
+
+    static let sheetTop = Color(light: 0xFFFAFC, dark: 0x241920)
+    static let sheetBottom = Color(light: 0xFEF5F8, dark: 0x1C141A)
+    static let handle = Color(light: 0xF2C6D5, dark: 0x5A3A48)
     static let scrim = Color(hex: 0x27020E)
-    static let shadow = Color(hex: 0xB0325F)
+    static let shadow = Color(light: 0xB0325F, dark: 0x000000)
 
-    static let previewDark = Color(hex: 0x2A2227)
+    static let previewDark = Color(light: 0x2A2227, dark: 0x120C0F)
     static let bracket = Color(hex: 0xF998BB)
     static let paper = Color(hex: 0xF7F1EA)
 }
 
-/// Il gradiente verticale di tutte le schermate, dal rosa quasi bianco al rosa pieno.
+extension Color {
+    /// Un colore per il tema chiaro e uno per quello scuro.
+    init(light: UInt32, dark: UInt32, lightOpacity: Double = 1, darkOpacity: Double = 1) {
+        self.init(uiColor: UIColor { traits in
+            let isDark = traits.userInterfaceStyle == .dark
+            return UIColor(rgb: isDark ? dark : light, alpha: isDark ? darkOpacity : lightOpacity)
+        })
+    }
+}
+
+extension UIColor {
+    convenience init(rgb: UInt32, alpha: Double = 1) {
+        self.init(red: CGFloat((rgb >> 16) & 0xFF) / 255,
+                  green: CGFloat((rgb >> 8) & 0xFF) / 255,
+                  blue: CGFloat(rgb & 0xFF) / 255,
+                  alpha: alpha)
+    }
+}
+
+/// Il gradiente verticale di tutte le schermate, dal rosa quasi bianco al rosa pieno
+/// (nel tema scuro: dal prugna quasi nero al lampone).
 enum Backdrop {
-    private static let raw: [(location: Double, hex: UInt32)] = [
+    private typealias Stop = (location: Double, hex: UInt32)
+    private static let light: [Stop] = [
         (0.00, 0xFEF6F9), (0.10, 0xFEF2F6), (0.20, 0xFFEEF3), (0.30, 0xFEE9F0),
         (0.40, 0xFCE0EA), (0.50, 0xFCD3E2), (0.60, 0xFDC8DA), (0.70, 0xFFBCD3),
         (0.80, 0xFFB2CC), (0.90, 0xFEA2C1), (1.00, 0xFE93B8),
     ]
-    static let stops: [Gradient.Stop] = raw.map { .init(color: Color(hex: $0.hex), location: $0.location) }
-    static let gradient = LinearGradient(stops: stops, startPoint: .top, endPoint: .bottom)
+    private static let dark: [Stop] = [
+        (0.00, 0x150F12), (0.20, 0x181114), (0.40, 0x1D1318), (0.55, 0x23151C),
+        (0.70, 0x2D1722), (0.85, 0x3A1A2A), (1.00, 0x4A1E34),
+    ]
+
+    static var stops: [Gradient.Stop] {
+        // Stesse posizioni in entrambi i temi: si campiona il gradiente scuro dove cadono quelle chiare.
+        light.map { .init(color: color(at: $0.location), location: $0.location) }
+    }
+    static var gradient: LinearGradient { LinearGradient(stops: stops, startPoint: .top, endPoint: .bottom) }
 
     /// Il colore del gradiente a una frazione dell'altezza dello schermo (0 = in alto).
     static func color(at t: Double) -> Color {
-        let t = min(1, max(0, t))
-        guard let i = raw.lastIndex(where: { $0.location <= t }), i < raw.count - 1 else { return Color(hex: raw.last!.hex) }
-        let a = raw[i], b = raw[i + 1]
-        let u = (t - a.location) / (b.location - a.location)
-        func channel(_ h: UInt32, _ shift: UInt32) -> Double { Double((h >> shift) & 0xFF) / 255 }
-        func mix(_ shift: UInt32) -> Double { channel(a.hex, shift) + (channel(b.hex, shift) - channel(a.hex, shift)) * u }
-        return Color(.sRGB, red: mix(16), green: mix(8), blue: mix(0))
+        Color(uiColor: UIColor { traits in
+            let stops = traits.userInterfaceStyle == .dark ? dark : light
+            return UIColor.mix(stops, at: t)
+        })
     }
 
     /// Lo stesso gradiente, ritagliato sulla fascia di schermo tra `top` e `bottom` (frazioni).
     static func slice(from top: Double, to bottom: Double) -> LinearGradient {
         guard bottom > top else { return LinearGradient(colors: [color(at: top)], startPoint: .top, endPoint: .bottom) }
         var slice: [Gradient.Stop] = [.init(color: color(at: top), location: 0)]
-        for s in raw where s.location > top && s.location < bottom {
-            slice.append(.init(color: Color(hex: s.hex), location: (s.location - top) / (bottom - top)))
+        for s in light where s.location > top && s.location < bottom {
+            slice.append(.init(color: color(at: s.location), location: (s.location - top) / (bottom - top)))
         }
         slice.append(.init(color: color(at: bottom), location: 1))
         return LinearGradient(stops: slice, startPoint: .top, endPoint: .bottom)
+    }
+}
+
+private extension UIColor {
+    static func mix(_ stops: [(location: Double, hex: UInt32)], at t: Double) -> UIColor {
+        let t = min(1, max(0, t))
+        guard let i = stops.lastIndex(where: { $0.location <= t }), i < stops.count - 1 else {
+            return UIColor(rgb: stops.last!.hex)
+        }
+        let a = stops[i], b = stops[i + 1]
+        let u = (t - a.location) / (b.location - a.location)
+        func channel(_ h: UInt32, _ shift: UInt32) -> Double { Double((h >> shift) & 0xFF) / 255 }
+        func mix(_ shift: UInt32) -> CGFloat { CGFloat(channel(a.hex, shift) + (channel(b.hex, shift) - channel(a.hex, shift)) * u) }
+        return UIColor(red: mix(16), green: mix(8), blue: mix(0), alpha: 1)
     }
 }
 
@@ -201,7 +254,7 @@ enum Metrics {
 
 extension View {
     /// Card bianca con l'ombra rosata del mockup.
-    func card(radius: CGFloat = Metrics.cardRadius, fill: Color = .white) -> some View {
+    func card(radius: CGFloat = Metrics.cardRadius, fill: Color = Palette.card) -> some View {
         background(
             RoundedRectangle(cornerRadius: radius, style: .continuous)
                 .fill(fill)

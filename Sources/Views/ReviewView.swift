@@ -2,6 +2,7 @@ import SwiftUI
 
 /// "È tutto giusto?": le voci lette dallo scontrino, da confermare prima di andare avanti.
 struct ReviewView: View {
+    @Environment(\.currency) private var currency
     @Environment(AppModel.self) private var app
     @Bindable var draft: BillDraft
     @State private var editing: EditorTarget?
@@ -48,6 +49,7 @@ struct ReviewView: View {
             } onDelete: { id in
                 withAnimation(.snappy) { draft.items.removeAll { $0.id == id } }
             }
+            .environment(\.currency, draft.currency)
         }
     }
 
@@ -78,7 +80,7 @@ struct ReviewView: View {
                     Text("Add item").textStyle(TextStyle(face: .semibold, size: 16))
                     Spacer()
                 }
-                .foregroundStyle(Color(hex: 0xE388A7))
+                .foregroundStyle(Palette.pinkText)
                 .padding(.horizontal, 13)
                 .frame(height: 50)
                 .contentShape(Rectangle())
@@ -96,7 +98,7 @@ struct ReviewView: View {
                     .textStyle(.totalLabel)
                     .foregroundStyle(Palette.gray)
                 Spacer()
-                Text(Money.format(draft.itemsTotal))
+                Text(Money.format(draft.itemsTotal, currency))
                     .textStyle(.totalValue)
                     .foregroundStyle(Palette.ink)
                     .contentTransition(.numericText())
@@ -107,7 +109,7 @@ struct ReviewView: View {
             if let printed = draft.printedTotal, printed != draft.itemsTotal {
                 HStack(spacing: 6) {
                     Image(systemName: "exclamationmark.circle").font(.system(size: 13, weight: .medium))
-                    Text("The receipt says \(Money.format(printed))")
+                    Text("The receipt says \(Money.format(printed, currency))")
                         .textStyle(.rowWarning)
                     Spacer()
                 }
@@ -125,6 +127,7 @@ struct ReviewView: View {
 }
 
 private struct ItemRow: View {
+    @Environment(\.currency) private var currency
     let item: BillItem
 
     var body: some View {
@@ -148,7 +151,7 @@ private struct ItemRow: View {
                 }
             }
             Spacer(minLength: 8)
-            Text(Money.format(item.cents))
+            Text(Money.format(item.cents, currency))
                 .textStyle(.rowPrice)
                 .foregroundStyle(Palette.ink)
         }
@@ -172,6 +175,7 @@ struct EditorTarget: Identifiable {
 
 /// Correggere o aggiungere una voce: nome, quantità, prezzo.
 struct ItemEditor: View {
+    @Environment(\.currency) private var currency
     @Environment(\.dismiss) private var dismiss
     let original: BillItem?
     let onSave: (BillItem) -> Void
@@ -224,7 +228,7 @@ struct ItemEditor: View {
                 .onSubmit { focus = .price }
                 .padding(.horizontal, 20)
                 .frame(height: 54)
-                .background(Capsule().fill(.white).shadow(color: Palette.shadow.opacity(0.06), radius: 10, y: 4))
+                .background(Capsule().fill(Palette.card).shadow(color: Palette.shadow.opacity(0.06), radius: 10, y: 4))
 
             HStack(alignment: .bottom, spacing: 12) {
                 VStack(alignment: .leading, spacing: 0) {
@@ -241,13 +245,13 @@ struct ItemEditor: View {
                     }
                     .padding(.horizontal, 6)
                     .frame(height: 54)
-                    .background(Capsule().fill(.white).shadow(color: Palette.shadow.opacity(0.06), radius: 10, y: 4))
+                    .background(Capsule().fill(Palette.card).shadow(color: Palette.shadow.opacity(0.06), radius: 10, y: 4))
                     .animation(.snappy, value: quantity)
                 }
                 VStack(alignment: .leading, spacing: 0) {
                     Text("Line total").editorLabel()
                     HStack(spacing: 6) {
-                        Text("€")
+                        Text(currency.symbol)
                             .font(.custom(Inter.semibold.rawValue, size: 18))
                             .foregroundStyle(Palette.raspberry)
                         TextField(text: $price, prompt: Text("0.00").foregroundStyle(Palette.fieldPlaceholder)) { Text("Price") }
@@ -257,19 +261,19 @@ struct ItemEditor: View {
                             .focused($focus, equals: .price)
                             .onChange(of: price) { _, new in
                                 let negative = new.hasPrefix("-")
-                                let clean = (negative ? "-" : "") + Money.sanitizeInput(new)
+                                let clean = (negative ? "-" : "") + Money.sanitizeInput(new, decimals: currency.minorDigits > 0)
                                 if clean != new { price = clean }
                             }
                     }
                     .padding(.horizontal, 20)
                     .frame(height: 54)
-                    .background(Capsule().fill(.white).shadow(color: Palette.shadow.opacity(0.06), radius: 10, y: 4))
+                    .background(Capsule().fill(Palette.card).shadow(color: Palette.shadow.opacity(0.06), radius: 10, y: 4))
                 }
             }
             .padding(.top, 16)
 
             if quantity > 1, let c = cents {
-                Text("\(Money.format(c / quantity)) each")
+                Text("\(Money.format(c / quantity, currency)) each")
                     .textStyle(.micro)
                     .foregroundStyle(Palette.gray)
                     .frame(maxWidth: .infinity, alignment: .trailing)
@@ -290,7 +294,7 @@ struct ItemEditor: View {
                             .foregroundStyle(Palette.warning)
                             .frame(maxWidth: .infinity)
                             .frame(height: Metrics.buttonHeight)
-                            .background(Capsule().fill(Color(hex: 0xFFF8FA)).shadow(color: Palette.shadow.opacity(0.08), radius: 12, y: 5))
+                            .background(Capsule().fill(Palette.pillFill).shadow(color: Palette.shadow.opacity(0.08), radius: 12, y: 5))
                     }
                     .buttonStyle(PressableStyle())
                     .frame(width: 130)

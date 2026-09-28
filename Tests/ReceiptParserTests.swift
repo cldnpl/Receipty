@@ -112,6 +112,33 @@ final class ReceiptParserTests: XCTestCase {
         XCTAssertEqual(parsed.total, 3628)
     }
 
+    func testOtherCurrencies() {
+        let parsed = ReceiptParser.parse(lines([
+            ("Burger", "$12.50"),
+            ("Fries", "4.00 USD"),
+            ("Fondue", "CHF38.00"),
+            ("Laksa", "S$9.80"),
+            ("Pint", "£6.20"),
+        ]))
+        XCTAssertEqual(parsed.items.map(\.cents), [1250, 400, 3800, 980, 620])
+        XCTAssertTrue(parsed.items.allSatisfy { $0.issue == nil })
+    }
+
+    func testYenReceiptWithoutDecimals() {
+        let parsed = ReceiptParser.$minorDigits.withValue(0) {
+            ReceiptParser.parse(lines([
+                ("Table 12", nil),
+                ("Ramen", "¥1,200"),
+                ("Gyoza", "¥480"),
+                ("Beer", "650"),
+                ("TOTAL", "¥2,330"),
+            ]))
+        }
+        XCTAssertEqual(parsed.items.map(\.name), ["Ramen", "Gyoza", "Beer"])
+        XCTAssertEqual(parsed.items.map(\.cents), [120_000, 48_000, 65_000])
+        XCTAssertEqual(parsed.total, 233_000)
+    }
+
     func testLowConfidenceFlagsItems() {
         let parsed = ReceiptParser.parse(lines([("CARBONARA", "12,00")], confidence: 0.3))
         XCTAssertEqual(parsed.items.first?.issue, .price)

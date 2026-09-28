@@ -29,12 +29,14 @@ struct NewBillSheet: View {
                                    subtitle: "Each pays for their own order",
                                    prominent: true)
                     }
+                    .coachTarget(.scanOption)
                     Button { app.startEqualSplit() } label: {
                         OptionCard(icon: "divide",
                                    title: "Enter manually",
                                    subtitle: "Total split equally",
                                    prominent: false)
                     }
+                    .coachTarget(.manualOption)
                 }
                 .buttonStyle(PressableStyle())
                 .padding(.top, 18)
@@ -84,7 +86,7 @@ private struct OptionCard: View {
         .frame(maxWidth: .infinity)
         .background(
             RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous)
-                .fill(prominent ? Palette.pink : .white)
+                .fill(prominent ? Palette.pink : Palette.card)
                 .shadow(color: (prominent ? Palette.pink : Palette.shadow).opacity(prominent ? 0.35 : 0.07),
                         radius: prominent ? 18 : 16, y: 8)
         )

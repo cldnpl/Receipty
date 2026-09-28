@@ -7,6 +7,8 @@ final class BillDraft {
     let id = UUID()
     let createdAt = Date()
     var source: BillSource
+    /// Presa dalle impostazioni quando il conto nasce: cambiarla dopo non tocca questo conto.
+    let currency: Currency
 
     var items: [BillItem] = []
     /// Il totale stampato sullo scontrino, se l'OCR l'ha trovato: serve solo a verificare le voci.
@@ -17,8 +19,9 @@ final class BillDraft {
     /// Solo per la divisione in parti uguali.
     var equalTotalText = ""
 
-    init(source: BillSource) {
+    init(source: BillSource, currency: Currency = .current) {
         self.source = source
+        self.currency = currency
     }
 
     // MARK: Totali
@@ -41,10 +44,10 @@ final class BillDraft {
     var owed: [UUID: Int] {
         let ids = people.map(\.id)
         if source.isItemized {
-            return SettlementEngine.itemizedShares(items: items, people: ids)
+            return SettlementEngine.itemizedShares(items: items, people: ids, unit: currency.unit)
         }
         let paid = Dictionary(uniqueKeysWithValues: people.map { ($0.id, self.paid($0)) })
-        return SettlementEngine.equalShares(total: total, people: ids, paid: paid)
+        return SettlementEngine.equalShares(total: total, people: ids, paid: paid, unit: currency.unit)
     }
 
     /// Si può calcolare quando sul piatto c'è almeno il totale: quello che avanza è il resto.
@@ -53,7 +56,9 @@ final class BillDraft {
 
     func settlement() -> Settlement {
         let paid = Dictionary(uniqueKeysWithValues: people.map { ($0.id, self.paid($0)) })
-        return SettlementEngine.settle(people: people, owed: owed, paid: paid, total: total)
+        var result = SettlementEngine.settle(people: people, owed: owed, paid: paid, total: total)
+        result.currency = currency
+        return result
     }
 
     // MARK: Persone
