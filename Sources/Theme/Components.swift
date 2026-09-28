@@ -236,6 +236,64 @@ struct FlowHeader: View {
     }
 }
 
+// MARK: - Scorri per eliminare
+
+/// Una riga che scorre a sinistra e scopre il bottone Elimina, come in Mail.
+///
+/// È uno ScrollView orizzontale e non un DragGesture: così UIKit distingue da solo lo scroll
+/// verticale della lista da quello orizzontale della riga, senza che i due si rubino il tocco.
+struct SwipeToDelete<Content: View>: View {
+    var height: CGFloat
+    var buttonWidth: CGFloat = 78
+    let onDelete: () -> Void
+    @ViewBuilder var content: Content
+
+    private let gap: CGFloat = 10
+
+    var body: some View {
+        ScrollView(.horizontal) {
+            HStack(spacing: gap) {
+                content
+                    .containerRelativeFrame(.horizontal)
+                Button(action: onDelete) {
+                    VStack(spacing: 5) {
+                        Image(systemName: "trash").font(.system(size: 18, weight: .semibold))
+                        Text("Delete").textStyle(TextStyle(face: .semibold, size: 13))
+                    }
+                    .foregroundStyle(.white)
+                    .frame(width: buttonWidth, height: height)
+                    .background(
+                        RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous)
+                            .fill(Color(light: 0xE0527A, dark: 0xD9466F))
+                    )
+                }
+                .buttonStyle(PressableStyle(scale: 0.94))
+                .accessibilityHidden(true)
+                // Fuori dalla riga il bottone non si vede: compare man mano che la card scorre.
+                .scrollTransition(.interactive, axis: .horizontal) { view, phase in
+                    view.opacity(phase.isIdentity ? 1 : 0)
+                        .scaleEffect(phase.isIdentity ? 1 : 0.8)
+                }
+            }
+            .scrollTargetLayout()
+        }
+        .scrollTargetBehavior(RevealBehavior())
+        .scrollIndicators(.hidden)
+        .scrollClipDisabled()
+        .frame(height: height)
+    }
+}
+
+/// La riga si ferma solo chiusa o tutta aperta, a seconda di dove e con che slancio la si lascia.
+private struct RevealBehavior: ScrollTargetBehavior {
+    func updateTarget(_ target: inout ScrollTarget, context: TargetContext) {
+        let open = max(0, context.contentSize.width - context.containerSize.width)
+        let flick = context.velocity.dx
+        let shouldOpen = abs(flick) > 0.3 ? flick > 0 : target.rect.minX > open / 2
+        target.rect.origin.x = shouldOpen ? open : 0
+    }
+}
+
 // MARK: - Stati
 
 /// "I conti tornano" / "Mancano €5,00".

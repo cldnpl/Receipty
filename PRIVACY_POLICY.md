@@ -30,7 +30,7 @@ The names you add for the people at the table stay on your device. Use first nam
 
 ## Deleting your data
 
-Long-press a bill in Recent bills and choose Delete to remove it. Deleting the app removes all of its data from your device.
+Swipe left on a bill in Recent bills (or long-press it) and tap Delete to remove it. Deleting the app removes all of its data from your device.
 
 ## Children
 

@@ -41,17 +41,22 @@ struct HomeView: View {
 
                     LazyVStack(spacing: 16) {
                         ForEach(app.store.bills) { bill in
-                            Button {
-                                app.path.append(.saved(bill.id))
-                            } label: {
-                                BillCard(bill: bill)
-                            }
-                            .buttonStyle(PressableStyle(scale: 0.98))
-                            .contextMenu {
-                                Button("Delete", systemImage: "trash", role: .destructive) {
-                                    withAnimation(.snappy) { app.store.delete(bill.id) }
+                            SwipeToDelete(height: 99) {
+                                delete(bill)
+                            } content: {
+                                Button {
+                                    app.path.append(.saved(bill.id))
+                                } label: {
+                                    BillCard(bill: bill)
                                 }
+                                .buttonStyle(PressableStyle(scale: 0.98))
+                                .contextMenu {
+                                    Button("Delete", systemImage: "trash", role: .destructive) { delete(bill) }
+                                }
+                                .accessibilityAction(named: "Delete") { delete(bill) }
                             }
+                            .transition(.asymmetric(insertion: .opacity,
+                                                    removal: .opacity.combined(with: .move(edge: .leading))))
                         }
                     }
                     .padding(.top, 14)
@@ -66,6 +71,11 @@ struct HomeView: View {
         .topFade(10)
         .background(BackdropView())
         .toolbar(.hidden, for: .navigationBar)
+    }
+
+    private func delete(_ bill: SavedBill) {
+        Haptics.tap()
+        withAnimation(.snappy) { app.store.delete(bill.id) }
     }
 }
 
