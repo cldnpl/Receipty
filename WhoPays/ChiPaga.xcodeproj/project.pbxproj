@@ -1,0 +1,586 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0475A8410930E113CDC3E22E /* BillDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07EBDAFD8096CB408EA11C78 /* BillDraft.swift */; };
+		0B1981A921793BB466B5DE87 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D98B47F095A94D8036FE071 /* AppModel.swift */; };
+		0B26746676B860BFE0B2ACAF /* Inter-LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = F15A89ED9B03D5F6344F5960 /* Inter-LICENSE.txt */; };
+		113CD36ACDFCFF9463A525AD /* Money.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A3051AE96993B8EE0D2EFDA /* Money.swift */; };
+		1AC9A11E91BD13EF364A2A94 /* Bill.swift in Sources */ = {isa = PBXBuildFile; fileRef = 925AE9EF5F2666D9892EEC2D /* Bill.swift */; };
+		396162CB06BDAF751717A6E3 /* PeopleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF0386E814915BBF3CF5A4E /* PeopleView.swift */; };
+		4C384CD1EA82C2A17F9D96FE /* SettlementEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F85D672FD06F7BAA007136 /* SettlementEngine.swift */; };
+		5D5C8A7BCED44F7E56E08630 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3F19931A2B8D9A80946303 /* RootView.swift */; };
+		61699E3A41DC64A7C6DBD01D /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AD6C29CC36D1129B2D4B71A /* ScanView.swift */; };
+		72FE164D40C29A71639CA538 /* Inter-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 676ABC835F057B62E1E584D2 /* Inter-SemiBold.ttf */; };
+		766364CA2876496693AAE6AD /* AssignView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B6B11C1C00755452753D4B /* AssignView.swift */; };
+		769F701D7B66F58DCD4D9194 /* NewBillSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304861AF00679A583ADC83A9 /* NewBillSheet.swift */; };
+		7A3D8BD502F107C674B8D202 /* Inter-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4BB396D039243BE0D22CE157 /* Inter-Medium.ttf */; };
+		7BCD7C856FD3A5B9979891EC /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308D06C358811BC626E18FE3 /* Theme.swift */; };
+		7CD1720393D4842BCA5AA028 /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 771764BD6E6E56A7310336AB /* Camera.swift */; };
+		858BB505D51AFE3C6505BC69 /* SettlementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB383327D3DDE910A0219B42 /* SettlementTests.swift */; };
+		8D278ACED75D97104EF99150 /* Inter-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0E9D737788A8C052FBD75153 /* Inter-Regular.ttf */; };
+		916110C664EBB6F4F00D999C /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = E21F763B149A03AACFB91A77 /* Components.swift */; };
+		926F3A2CB77BCD86A5C8C174 /* Inter-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 99540E1963496F2FA8469A89 /* Inter-Bold.ttf */; };
+		95DE0185CBF3616002854251 /* ReceiptReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D218105B323394D1D1A51C /* ReceiptReader.swift */; };
+		9A4A684D67B40111AD320559 /* ChiPagaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404C4037BAB916BCD0BD1938 /* ChiPagaApp.swift */; };
+		AD10B6F9C6F96D63295B6433 /* ReceiptParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 869E3CEE3C08C50C6E643793 /* ReceiptParserTests.swift */; };
+		B38DCB70783A8F283CAE70C6 /* Inter-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BADB8FBF3DC64D7B77B958CD /* Inter-ExtraBold.ttf */; };
+		BB02198610AA1A37C4D06F31 /* ReceiptParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9E3790D5A5817053C3EC4E8 /* ReceiptParser.swift */; };
+		BDF6F8EC8A4D18F6A2D79E10 /* ResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92CF8860CC3CC6993EE031BC /* ResultView.swift */; };
+		C4818605511E778241B52B14 /* BillStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8F8F12E615E3E2FBFB4D7D0 /* BillStore.swift */; };
+		C49C6049FC8A91BFBA40246A /* DemoSeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30E6ACA4CA19ABE849714D1 /* DemoSeed.swift */; };
+		C7300964CF6C5693DEBADC03 /* PaymentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 944856AFC3639B6505728966 /* PaymentsView.swift */; };
+		E6B54099F16A34A4D0B04E1F /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F09658EFDA40260107B87173 /* HomeView.swift */; };
+		E7E773FA55CC2FB72C52ABFF /* ReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6535B8537C1D2D834F67B516 /* ReviewView.swift */; };
+		F294788113C70E99FF12B49C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 52C1ABCBAA46877A07BB990D /* Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		C8242CF970439B1B69F2E62F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1FFA35FBEB9C77C29B334E0C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8A362D81E6FB6A123496FDCF;
+			remoteInfo = ChiPaga;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		07EBDAFD8096CB408EA11C78 /* BillDraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillDraft.swift; sourceTree = "<group>"; };
+		0A3051AE96993B8EE0D2EFDA /* Money.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Money.swift; sourceTree = "<group>"; };
+		0E9D737788A8C052FBD75153 /* Inter-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-Regular.ttf"; sourceTree = "<group>"; };
+		20B6B11C1C00755452753D4B /* AssignView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignView.swift; sourceTree = "<group>"; };
+		304861AF00679A583ADC83A9 /* NewBillSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewBillSheet.swift; sourceTree = "<group>"; };
+		308D06C358811BC626E18FE3 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		404C4037BAB916BCD0BD1938 /* ChiPagaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChiPagaApp.swift; sourceTree = "<group>"; };
+		4BB396D039243BE0D22CE157 /* Inter-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-Medium.ttf"; sourceTree = "<group>"; };
+		52C1ABCBAA46877A07BB990D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		54D218105B323394D1D1A51C /* ReceiptReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptReader.swift; sourceTree = "<group>"; };
+		5D98B47F095A94D8036FE071 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		6535B8537C1D2D834F67B516 /* ReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewView.swift; sourceTree = "<group>"; };
+		676ABC835F057B62E1E584D2 /* Inter-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-SemiBold.ttf"; sourceTree = "<group>"; };
+		6AF0386E814915BBF3CF5A4E /* PeopleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleView.swift; sourceTree = "<group>"; };
+		771764BD6E6E56A7310336AB /* Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
+		869E3CEE3C08C50C6E643793 /* ReceiptParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptParserTests.swift; sourceTree = "<group>"; };
+		8AD6C29CC36D1129B2D4B71A /* ScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
+		925AE9EF5F2666D9892EEC2D /* Bill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bill.swift; sourceTree = "<group>"; };
+		92CF8860CC3CC6993EE031BC /* ResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultView.swift; sourceTree = "<group>"; };
+		944856AFC3639B6505728966 /* PaymentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsView.swift; sourceTree = "<group>"; };
+		99540E1963496F2FA8469A89 /* Inter-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-Bold.ttf"; sourceTree = "<group>"; };
+		AB383327D3DDE910A0219B42 /* SettlementTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementTests.swift; sourceTree = "<group>"; };
+		AF97F620039567417AD17FB4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		B30E6ACA4CA19ABE849714D1 /* DemoSeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoSeed.swift; sourceTree = "<group>"; };
+		B8F8F12E615E3E2FBFB4D7D0 /* BillStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillStore.swift; sourceTree = "<group>"; };
+		BADB8FBF3DC64D7B77B958CD /* Inter-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-ExtraBold.ttf"; sourceTree = "<group>"; };
+		CE3F19931A2B8D9A80946303 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		D3938E51A6A73F66A204ED79 /* ChiPaga.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ChiPaga.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E21F763B149A03AACFB91A77 /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
+		F09658EFDA40260107B87173 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		F15A89ED9B03D5F6344F5960 /* Inter-LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Inter-LICENSE.txt"; sourceTree = "<group>"; };
+		F3AD07C45AB033F9054EE465 /* ChiPagaTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ChiPagaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F8F85D672FD06F7BAA007136 /* SettlementEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementEngine.swift; sourceTree = "<group>"; };
+		F9E3790D5A5817053C3EC4E8 /* ReceiptParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptParser.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		23E1E26C6E2F19FF507D48B3 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				361D9F14C4A320F3AF490226 /* App */,
+				DA053D85D4798BA34AC70B67 /* Models */,
+				CEBBCAFD50A741E4E4E507B5 /* Scanner */,
+				3FA308A9828616BB069C7D01 /* Theme */,
+				7ADC60A8C94DC6D26E0E78C9 /* Views */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		361D9F14C4A320F3AF490226 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				404C4037BAB916BCD0BD1938 /* ChiPagaApp.swift */,
+				B30E6ACA4CA19ABE849714D1 /* DemoSeed.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		3FA308A9828616BB069C7D01 /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				E21F763B149A03AACFB91A77 /* Components.swift */,
+				308D06C358811BC626E18FE3 /* Theme.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+		49D2650AAA9B4B64291EFE4A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D3938E51A6A73F66A204ED79 /* ChiPaga.app */,
+				F3AD07C45AB033F9054EE465 /* ChiPagaTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		57D05102E77613E6A4A99467 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				99540E1963496F2FA8469A89 /* Inter-Bold.ttf */,
+				BADB8FBF3DC64D7B77B958CD /* Inter-ExtraBold.ttf */,
+				F15A89ED9B03D5F6344F5960 /* Inter-LICENSE.txt */,
+				4BB396D039243BE0D22CE157 /* Inter-Medium.ttf */,
+				0E9D737788A8C052FBD75153 /* Inter-Regular.ttf */,
+				676ABC835F057B62E1E584D2 /* Inter-SemiBold.ttf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
+		5E0BC6142B8A5A07DA5FE4AE /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				869E3CEE3C08C50C6E643793 /* ReceiptParserTests.swift */,
+				AB383327D3DDE910A0219B42 /* SettlementTests.swift */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		7ADC60A8C94DC6D26E0E78C9 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				20B6B11C1C00755452753D4B /* AssignView.swift */,
+				F09658EFDA40260107B87173 /* HomeView.swift */,
+				304861AF00679A583ADC83A9 /* NewBillSheet.swift */,
+				944856AFC3639B6505728966 /* PaymentsView.swift */,
+				6AF0386E814915BBF3CF5A4E /* PeopleView.swift */,
+				92CF8860CC3CC6993EE031BC /* ResultView.swift */,
+				6535B8537C1D2D834F67B516 /* ReviewView.swift */,
+				CE3F19931A2B8D9A80946303 /* RootView.swift */,
+				8AD6C29CC36D1129B2D4B71A /* ScanView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		8BFF3216763E2DFE0C08B708 = {
+			isa = PBXGroup;
+			children = (
+				B8E8D4CA63E56B6A9F901BD5 /* Resources */,
+				23E1E26C6E2F19FF507D48B3 /* Sources */,
+				5E0BC6142B8A5A07DA5FE4AE /* Tests */,
+				49D2650AAA9B4B64291EFE4A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		B8E8D4CA63E56B6A9F901BD5 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				52C1ABCBAA46877A07BB990D /* Assets.xcassets */,
+				AF97F620039567417AD17FB4 /* Info.plist */,
+				57D05102E77613E6A4A99467 /* Fonts */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		CEBBCAFD50A741E4E4E507B5 /* Scanner */ = {
+			isa = PBXGroup;
+			children = (
+				771764BD6E6E56A7310336AB /* Camera.swift */,
+				F9E3790D5A5817053C3EC4E8 /* ReceiptParser.swift */,
+				54D218105B323394D1D1A51C /* ReceiptReader.swift */,
+			);
+			path = Scanner;
+			sourceTree = "<group>";
+		};
+		DA053D85D4798BA34AC70B67 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				5D98B47F095A94D8036FE071 /* AppModel.swift */,
+				925AE9EF5F2666D9892EEC2D /* Bill.swift */,
+				07EBDAFD8096CB408EA11C78 /* BillDraft.swift */,
+				B8F8F12E615E3E2FBFB4D7D0 /* BillStore.swift */,
+				0A3051AE96993B8EE0D2EFDA /* Money.swift */,
+				F8F85D672FD06F7BAA007136 /* SettlementEngine.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		57BD244BE010936E5BFDB0C6 /* ChiPagaTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B7E48B72A5886AFF9DFBFD96 /* Build configuration list for PBXNativeTarget "ChiPagaTests" */;
+			buildPhases = (
+				9E065F2E914F5FC8A7534C59 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AC025A3A0DB174F41FAD78DA /* PBXTargetDependency */,
+			);
+			name = ChiPagaTests;
+			packageProductDependencies = (
+			);
+			productName = ChiPagaTests;
+			productReference = F3AD07C45AB033F9054EE465 /* ChiPagaTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		8A362D81E6FB6A123496FDCF /* ChiPaga */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C818B6712C80FF0370F2FC4D /* Build configuration list for PBXNativeTarget "ChiPaga" */;
+			buildPhases = (
+				8DBD5AAD7D6C3E55D75F84E1 /* Sources */,
+				0C2658AFD062F20B2628AC10 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ChiPaga;
+			packageProductDependencies = (
+			);
+			productName = ChiPaga;
+			productReference = D3938E51A6A73F66A204ED79 /* ChiPaga.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1FFA35FBEB9C77C29B334E0C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					57BD244BE010936E5BFDB0C6 = {
+						DevelopmentTeam = H4M7KJL5DT;
+						ProvisioningStyle = Automatic;
+					};
+					8A362D81E6FB6A123496FDCF = {
+						DevelopmentTeam = H4M7KJL5DT;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 9B6DBFE7C563936BC0467286 /* Build configuration list for PBXProject "ChiPaga" */;
+			developmentRegion = it;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				it,
+			);
+			mainGroup = 8BFF3216763E2DFE0C08B708;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 49D2650AAA9B4B64291EFE4A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8A362D81E6FB6A123496FDCF /* ChiPaga */,
+				57BD244BE010936E5BFDB0C6 /* ChiPagaTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		0C2658AFD062F20B2628AC10 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F294788113C70E99FF12B49C /* Assets.xcassets in Resources */,
+				926F3A2CB77BCD86A5C8C174 /* Inter-Bold.ttf in Resources */,
+				B38DCB70783A8F283CAE70C6 /* Inter-ExtraBold.ttf in Resources */,
+				0B26746676B860BFE0B2ACAF /* Inter-LICENSE.txt in Resources */,
+				7A3D8BD502F107C674B8D202 /* Inter-Medium.ttf in Resources */,
+				8D278ACED75D97104EF99150 /* Inter-Regular.ttf in Resources */,
+				72FE164D40C29A71639CA538 /* Inter-SemiBold.ttf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8DBD5AAD7D6C3E55D75F84E1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0B1981A921793BB466B5DE87 /* AppModel.swift in Sources */,
+				766364CA2876496693AAE6AD /* AssignView.swift in Sources */,
+				1AC9A11E91BD13EF364A2A94 /* Bill.swift in Sources */,
+				0475A8410930E113CDC3E22E /* BillDraft.swift in Sources */,
+				C4818605511E778241B52B14 /* BillStore.swift in Sources */,
+				7CD1720393D4842BCA5AA028 /* Camera.swift in Sources */,
+				9A4A684D67B40111AD320559 /* ChiPagaApp.swift in Sources */,
+				916110C664EBB6F4F00D999C /* Components.swift in Sources */,
+				C49C6049FC8A91BFBA40246A /* DemoSeed.swift in Sources */,
+				E6B54099F16A34A4D0B04E1F /* HomeView.swift in Sources */,
+				113CD36ACDFCFF9463A525AD /* Money.swift in Sources */,
+				769F701D7B66F58DCD4D9194 /* NewBillSheet.swift in Sources */,
+				C7300964CF6C5693DEBADC03 /* PaymentsView.swift in Sources */,
+				396162CB06BDAF751717A6E3 /* PeopleView.swift in Sources */,
+				BB02198610AA1A37C4D06F31 /* ReceiptParser.swift in Sources */,
+				95DE0185CBF3616002854251 /* ReceiptReader.swift in Sources */,
+				BDF6F8EC8A4D18F6A2D79E10 /* ResultView.swift in Sources */,
+				E7E773FA55CC2FB72C52ABFF /* ReviewView.swift in Sources */,
+				5D5C8A7BCED44F7E56E08630 /* RootView.swift in Sources */,
+				61699E3A41DC64A7C6DBD01D /* ScanView.swift in Sources */,
+				4C384CD1EA82C2A17F9D96FE /* SettlementEngine.swift in Sources */,
+				7BCD7C856FD3A5B9979891EC /* Theme.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9E065F2E914F5FC8A7534C59 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AD10B6F9C6F96D63295B6433 /* ReceiptParserTests.swift in Sources */,
+				858BB505D51AFE3C6505BC69 /* SettlementTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AC025A3A0DB174F41FAD78DA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8A362D81E6FB6A123496FDCF /* ChiPaga */;
+			targetProxy = C8242CF970439B1B69F2E62F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		4986AE009583E100F5626274 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.cldnpl.chipaga.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ChiPaga.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ChiPaga";
+			};
+			name = Debug;
+		};
+		9C6A7D034AE47F20336D5298 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = H4M7KJL5DT;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		CBF4C007C58C1A4CB5F0CC1B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.cldnpl.chipaga;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		E2AE34EC08C8A3F4A76EE495 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = H4M7KJL5DT;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		E9767A85379403484D9564B7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.cldnpl.chipaga;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		F837EEAA835B25F479A51A26 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.cldnpl.chipaga.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ChiPaga.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ChiPaga";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9B6DBFE7C563936BC0467286 /* Build configuration list for PBXProject "ChiPaga" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E2AE34EC08C8A3F4A76EE495 /* Debug */,
+				9C6A7D034AE47F20336D5298 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		B7E48B72A5886AFF9DFBFD96 /* Build configuration list for PBXNativeTarget "ChiPagaTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4986AE009583E100F5626274 /* Debug */,
+				F837EEAA835B25F479A51A26 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C818B6712C80FF0370F2FC4D /* Build configuration list for PBXNativeTarget "ChiPaga" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E9767A85379403484D9564B7 /* Debug */,
+				CBF4C007C58C1A4CB5F0CC1B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 1FFA35FBEB9C77C29B334E0C /* Project object */;
+}
