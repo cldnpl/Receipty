@@ -147,7 +147,11 @@ struct CoachOverlay: View {
                     callout(step: step)
                         .frame(width: min(geo.size.width - 40, 360))
                         .position(x: geo.size.width / 2, y: calloutY(for: focused, in: geo.size))
-                        .transition(.opacity.combined(with: .scale(scale: 0.96)))
+                        // La vecchia nuvoletta sparisce subito, la nuova arriva quando il buco è in posizione.
+                        .transition(.asymmetric(
+                            insertion: .opacity.combined(with: .scale(scale: 0.96))
+                                .animation(.easeOut(duration: 0.25).delay(0.4)),
+                            removal: .opacity.animation(.easeIn(duration: 0.1))))
                         .id(step)
                 }
             }
