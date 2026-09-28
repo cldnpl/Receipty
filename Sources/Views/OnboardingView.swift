@@ -50,7 +50,7 @@ struct OnboardingView: View {
             HStack(spacing: 7) {
                 ForEach(pages.indices, id: \.self) { i in
                     Capsule()
-                        .fill(i == page ? Palette.pink : Palette.dashed)
+                        .fill(i == page ? Palette.pink : Color.white)
                         .frame(width: i == page ? 24 : 8, height: 8)
                 }
             }
