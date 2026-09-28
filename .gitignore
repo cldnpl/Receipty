@@ -1,0 +1,7 @@
+.DS_Store
+DerivedData/
+build/
+xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+WhoPays.xcodeproj/
+Resources/Info.plist
