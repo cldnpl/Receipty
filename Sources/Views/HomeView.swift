@@ -7,7 +7,7 @@ struct HomeView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
                 HStack(alignment: .top) {
-                    Text("WhoPays")
+                    Text("Receipty")
                         .textStyle(.hero)
                         .foregroundStyle(Palette.ink)
                         .accessibilityAddTraits(.isHeader)

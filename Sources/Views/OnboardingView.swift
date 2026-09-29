@@ -6,9 +6,9 @@ struct OnboardingView: View {
     @State private var page = 0
 
     private let pages: [(title: String, text: String)] = [
-        ("Split the bill\nin seconds.", "Scan the receipt or type the total. WhoPays tells everyone exactly who pays whom."),
+        ("Split the bill\nin seconds.", "Scan the receipt or type the total. Receipty tells everyone exactly who pays whom."),
         ("Tap who had\nwhat.", "Shared a pizza? Pick both names and the price is split between them."),
-        ("Change?\nSorted.", "Paid with a big note? WhoPays hands out the change and keeps transfers to a minimum."),
+        ("Change?\nSorted.", "Paid with a big note? Receipty hands out the change and keeps transfers to a minimum."),
     ]
 
     var body: some View {

@@ -22,7 +22,7 @@ targets:
     info:
       path: Resources/Info.plist
       properties:
-        CFBundleDisplayName: WhoPays
+        CFBundleDisplayName: Receipty
         UIAppFonts:
           - Inter-Regular.ttf
           - Inter-Medium.ttf
@@ -31,7 +31,7 @@ targets:
           - Inter-ExtraBold.ttf
         UILaunchScreen:
           UIColorName: LaunchBackground
-        NSCameraUsageDescription: WhoPays uses the camera to read the items and prices on your receipt. The photo never leaves your phone.
+        NSCameraUsageDescription: Receipty uses the camera to read the items and prices on your receipt. The photo never leaves your phone.
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
         UIApplicationSceneManifest:

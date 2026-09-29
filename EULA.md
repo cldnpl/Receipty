@@ -1,12 +1,12 @@
-# WhoPays End User License Agreement (EULA)
+# Receipty End User License Agreement (EULA)
 
 Last updated: 28 September 2026
 
-WhoPays is licensed to you, not sold. Your use of the app is governed by Apple's [Standard Licensed Application End User License Agreement](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/) ("Standard EULA"), together with the additional terms below. If these additional terms and the Standard EULA disagree, the Standard EULA prevails.
+Receipty is licensed to you, not sold. Your use of the app is governed by Apple's [Standard Licensed Application End User License Agreement](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/) ("Standard EULA"), together with the additional terms below. If these additional terms and the Standard EULA disagree, the Standard EULA prevails.
 
-## What WhoPays is
+## What Receipty is
 
-WhoPays is a calculator. It helps a group work out how to split a bill and who should pay whom. It does not move money, hold money, process payments or offer financial, tax or legal advice.
+Receipty is a calculator. It helps a group work out how to split a bill and who should pay whom. It does not move money, hold money, process payments or offer financial, tax or legal advice.
 
 ## Check the numbers
 
@@ -20,7 +20,7 @@ The bills and names you enter stay on your device and remain yours. See the [Pri
 
 ## No warranty
 
-To the extent permitted by law, WhoPays is provided "as is", without warranties of any kind, as described in the Standard EULA. The developer is not liable for losses or disagreements arising from calculations, from misread receipts or from payments made between users.
+To the extent permitted by law, Receipty is provided "as is", without warranties of any kind, as described in the Standard EULA. The developer is not liable for losses or disagreements arising from calculations, from misread receipts or from payments made between users.
 
 ## Acceptable use
 
@@ -32,4 +32,4 @@ These terms are between you and the developer, not Apple. Apple is not responsib
 
 ## Contact
 
-For questions or support, use the support link on the WhoPays page of the App Store.
+For questions or support, use the support link on the Receipty page of the App Store.

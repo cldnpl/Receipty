@@ -34,7 +34,7 @@ final class Coach {
         var message: String {
             switch self {
             case .plus: "Tap + when the bill arrives."
-            case .scan: "Scan it. WhoPays reads every item, then you tap who had what."
+            case .scan: "Scan it. Receipty reads every item, then you tap who had what."
             case .manual: "Type the total and who paid. It's split equally, change included. Your bills stay on this iPhone."
             }
         }

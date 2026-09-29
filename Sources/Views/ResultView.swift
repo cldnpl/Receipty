@@ -172,7 +172,7 @@ struct ResultView: View {
     }
 
     private var summary: String {
-        var lines = ["WhoPays · \(DateText.short(date))", "\(Money.format(settlement.total, currency)) bill, \(settlement.lines.count) people", ""]
+        var lines = ["Receipty · \(DateText.short(date))", "\(Money.format(settlement.total, currency)) bill, \(settlement.lines.count) people", ""]
         if settlement.change > 0 {
             lines.append("Change back: \(Money.format(settlement.change, currency))")
             for share in settlement.changeSplit {
