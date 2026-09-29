@@ -212,6 +212,8 @@ extension View {
 struct FlowHeader: View {
     let title: String
     var subtitle: String?
+    /// Una riga d'esempio sotto il sottotitolo, più piccola e colorata.
+    var example: String?
     var backAction: (() -> Void)?
 
     var body: some View {
@@ -228,6 +230,16 @@ struct FlowHeader: View {
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(.top, 13.5)
                     .padding(.leading, 1)
+                    .transition(.opacity)
+            }
+            if let example {
+                Text(example)
+                    .textStyle(TextStyle(face: .medium, size: 14.5, lineHeight: 20))
+                    .foregroundStyle(Palette.raspberry)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, 6)
+                    .padding(.leading, 1)
+                    .transition(.opacity)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

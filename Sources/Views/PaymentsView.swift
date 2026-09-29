@@ -15,7 +15,10 @@ struct PaymentsView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            FlowHeader(title: "WHO PAID?")
+            // La spiegazione serve prima di scrivere: con la tastiera aperta si toglie e lascia spazio alle righe.
+            FlowHeader(title: "WHO PAID?",
+                       subtitle: focus == nil ? instructions : nil,
+                       example: focus == nil ? example : nil)
 
             ScrollView {
                 VStack(spacing: 14.5) {
@@ -96,6 +99,17 @@ struct PaymentsView: View {
                 .buttonStyle(PrimaryButtonStyle())
                 .disabled(!draft.canSettle)
             }
+    }
+
+    private var instructions: String {
+        draft.source.isItemized
+            ? "Next to each name, write what they're putting in."
+            : "Enter the total, then next to each name what they're putting in."
+    }
+
+    private var example: String {
+        let name = draft.people.first?.name ?? "Anna"
+        return "E.g. total 50, \(name) pays with a 50 note → 50 next to \(name)."
     }
 
     private func binding(for person: Person) -> Binding<String> {
