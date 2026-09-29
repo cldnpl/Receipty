@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct WhoPaysApp: App {
+struct ReceiptyApp: App {
     init() {
         // Da iOS 26 la tab bar è di vetro e fluttua: va lasciata com'è. Prima era una striscia
         // piena, che diventava bianca quando il contenuto le arrivava sotto: lì prende il colore

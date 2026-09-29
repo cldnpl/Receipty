@@ -16,16 +16,16 @@ No account, no ads, no tracking: bills stay on the device.
 
 ## Building
 
-On the App Store as **Receipty: Split the Bill**. The Xcode project, target and bundle id (`com.cldnpl.whopays`) keep the original working name, WhoPays.
+On the App Store as **Receipty: Split the Bill**. The bundle id keeps the original working name: `com.cldnpl.whopays`.
 
 
 The Xcode project is generated with [XcodeGen](https://github.com/yonaskolb/XcodeGen):
 
 ```bash
 xcodegen generate
-open WhoPays.xcodeproj
+open Receipty.xcodeproj
 ```
 
-`./build.sh [simulator UDID]` generates, builds and launches the app on a simulator. Tests: `xcodebuild -scheme WhoPays test -destination 'platform=iOS Simulator,name=iPhone 16'`.
+`./build.sh [simulator UDID]` generates, builds and launches the app on a simulator. Tests: `xcodebuild -scheme Receipty test -destination 'platform=iOS Simulator,name=iPhone 16'`.
 
 SwiftUI, iOS 17+. The Inter typeface is bundled under the SIL Open Font License (`Resources/Fonts/Inter-LICENSE.txt`).

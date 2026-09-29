@@ -1,6 +1,6 @@
 import XCTest
 import UIKit
-@testable import WhoPays
+@testable import Receipty
 
 /// OCR vero (Vision) su foto di scontrini: lo stesso percorso dell'app, dalla foto alle voci.
 final class ReceiptReaderTests: XCTestCase {

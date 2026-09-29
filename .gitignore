@@ -3,5 +3,5 @@ DerivedData/
 build/
 xcuserdata/
 *.xcodeproj/project.xcworkspace/xcuserdata/
-WhoPays.xcodeproj/
+Receipty.xcodeproj/
 Resources/Info.plist

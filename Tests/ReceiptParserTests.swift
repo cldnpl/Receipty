@@ -1,5 +1,5 @@
 import XCTest
-@testable import WhoPays
+@testable import Receipty
 
 final class ReceiptParserTests: XCTestCase {
 

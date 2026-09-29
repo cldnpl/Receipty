@@ -1,4 +1,4 @@
-name: WhoPays
+name: Receipty
 options:
   bundleIdPrefix: com.cldnpl
   developmentLanguage: en
@@ -13,7 +13,7 @@ settings:
     MARKETING_VERSION: "1.0"
     CURRENT_PROJECT_VERSION: "1"
 targets:
-  WhoPays:
+  Receipty:
     type: application
     platform: iOS
     sources:
@@ -44,29 +44,29 @@ targets:
         TARGETED_DEVICE_FAMILY: "1"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
-  WhoPaysTests:
+  ReceiptyTests:
     type: bundle.unit-test
     platform: iOS
     sources:
       - Tests
     dependencies:
-      - target: WhoPays
+      - target: Receipty
     settings:
       base:
         GENERATE_INFOPLIST_FILE: YES
         PRODUCT_BUNDLE_IDENTIFIER: com.cldnpl.whopays.tests
-        TEST_HOST: $(BUILT_PRODUCTS_DIR)/WhoPays.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/WhoPays
+        TEST_HOST: $(BUILT_PRODUCTS_DIR)/Receipty.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Receipty
         BUNDLE_LOADER: $(TEST_HOST)
 schemes:
-  WhoPays:
+  Receipty:
     build:
       targets:
-        WhoPays: all
-        WhoPaysTests: [test]
+        Receipty: all
+        ReceiptyTests: [test]
     run:
       config: Debug
     test:
       targets:
-        - WhoPaysTests
+        - ReceiptyTests
     archive:
       config: Release
