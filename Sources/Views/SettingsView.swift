@@ -33,7 +33,7 @@ enum LegalDocument: String, Identifiable {
     case eula = "EULA.md"
 
     var id: String { rawValue }
-    var url: URL { URL(string: "https://github.com/cldnpl/WhoPays/blob/main/\(rawValue)")! }
+    var url: URL { URL(string: "https://github.com/cldnpl/Receipty/blob/main/\(rawValue)")! }
 }
 
 /// Impostazioni: poche e utili. Aspetto, valuta, documenti legali.
