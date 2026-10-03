@@ -10,25 +10,39 @@ struct Currency: Hashable, Identifiable {
         self.code = code.uppercased()
     }
 
+    /// "Euro", "Japanese Yen", "Franco svizzero"…: il nome nella lingua dell'app.
+    /// L'iniziale maiuscola la mettiamo noi: in italiano e francese iOS li dà minuscoli,
+    /// e in un elenco di righe stonano.
     var name: String {
-        Locale(identifier: "en_US").localizedString(forCurrencyCode: code) ?? code
+        guard let name = I18n.shared.locale.localizedString(forCurrencyCode: code) else { return code }
+        return name.prefix(1).uppercased() + name.dropFirst()
     }
 
-    var symbol: String { formatter.currencySymbol ?? code }
+    /// Il simbolo non segue la lingua: serve corto, come glifo nei cerchietti e davanti ai campi
+    /// ("$", non "USD").
+    var symbol: String { Self.formatter(code, Self.symbolLocale).currencySymbol ?? code }
 
     /// 2 per euro e dollaro, 0 per yen, won, fiorino islandese...
-    var minorDigits: Int { formatter.maximumFractionDigits }
+    var minorDigits: Int { Self.formatter(code, Self.symbolLocale).maximumFractionDigits }
 
     /// Il passo di arrotondamento in centesimi: 1 centesimo, oppure 1 unità intera (100).
     var unit: Int { minorDigits == 0 ? 100 : 1 }
 
-    fileprivate var formatter: NumberFormatter {
-        if let cached = Self.cache[code] { return cached }
+    /// Per scrivere un importo intero: "€22.30" in inglese, "22,30 €" in italiano.
+    fileprivate var localizedFormatter: NumberFormatter {
+        Self.formatter(code, I18n.shared.locale)
+    }
+
+    private static let symbolLocale = Locale(identifier: "en_US")
+
+    private static func formatter(_ code: String, _ locale: Locale) -> NumberFormatter {
+        let key = "\(code)|\(locale.identifier)"
+        if let cached = cache[key] { return cached }
         let f = NumberFormatter()
         f.numberStyle = .currency
-        f.locale = Locale(identifier: "en_US")
+        f.locale = locale
         f.currencyCode = code
-        Self.cache[code] = f
+        cache[key] = f
         return f
     }
 
@@ -38,15 +52,28 @@ struct Currency: Hashable, Identifiable {
 
     /// Le valute proposte: le più usate in viaggio e nel mondo, con 0 o 2 decimali
     /// (dinaro kuwaitiano & co. a tre decimali restano fuori: i conti sono in centesimi).
-    static let all: [Currency] = [
+    private static let codes = [
         "EUR", "USD", "GBP", "CHF", "JPY", "CNY", "CAD", "AUD", "NZD", "HKD", "SGD", "INR",
         "KRW", "SEK", "NOK", "DKK", "ISK", "PLN", "CZK", "HUF", "RON", "BGN", "RSD", "ALL",
         "MKD", "BAM", "MDL", "UAH", "GEL", "AMD", "AZN", "TRY", "ILS", "AED", "SAR", "QAR",
         "EGP", "MAD", "ZAR", "NGN", "KES", "GHS", "TZS", "UGX", "BRL", "MXN", "ARS", "CLP",
         "COP", "PEN", "UYU", "CRC", "DOP", "THB", "VND", "IDR", "MYR", "PHP", "TWD", "PKR",
         "BDT", "LKR", "NPR", "KZT", "UZS", "MNT", "KHR", "LAK",
-    ].map(Currency.init(code:))
-        .sorted { $0.name < $1.name }
+    ]
+
+    /// In ordine alfabetico per nome, quindi un ordine diverso in ogni lingua.
+    static var all: [Currency] {
+        let locale = I18n.shared.locale
+        if let sorted, sorted.locale == locale.identifier { return sorted.list }
+        let list = codes.map(Currency.init(code:)).sorted {
+            $0.name.compare($1.name, options: [.caseInsensitive, .diacriticInsensitive],
+                            range: nil, locale: locale) == .orderedAscending
+        }
+        sorted = (locale.identifier, list)
+        return list
+    }
+
+    private static var sorted: (locale: String, list: [Currency])?
 
     static let defaultsKey = "currency"
 
@@ -74,10 +101,11 @@ extension Currency: Codable {
 }
 
 extension Money {
-    /// 2230 → "€22.30", "$22.30", "¥2,230" (per lo yen i centesimi sono già unità intere × 100).
+    /// 2230 → "€22.30", "22,30 €", "¥2,230": nella lingua dell'app
+    /// (per lo yen i centesimi sono già unità intere × 100).
     static func format(_ cents: Int, _ currency: Currency) -> String {
         let value = NSDecimalNumber(value: cents).dividing(by: 100)
-        let text = currency.formatter.string(from: value) ?? currency.symbol + editable(cents)
+        let text = currency.localizedFormatter.string(from: value) ?? currency.symbol + editable(cents)
         return text.replacingOccurrences(of: "-", with: "−")
     }
 

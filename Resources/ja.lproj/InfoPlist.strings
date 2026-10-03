@@ -1,0 +1,3 @@
+/* Receipty — ja. Testi di Info.plist. */
+
+"NSCameraUsageDescription" = "Receiptyはレシートの品目と金額を読み取るためにカメラを使います。写真が端末の外に出ることはありません。";

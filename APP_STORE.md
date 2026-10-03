@@ -2,6 +2,9 @@
 
 Tutti i testi della scheda, già dentro i limiti di caratteri. Lingua principale: English (U.S.).
 
+L'app è tradotta in 12 lingue (vedi `Resources/*.lproj`). In App Store Connect la scheda resta
+solo in inglese: aggiungere le localizzazioni della scheda è un lavoro a parte, quando serve.
+
 ## App Information
 
 | Campo | Valore |
@@ -14,7 +17,20 @@ Tutti i testi della scheda, già dentro i limiti di caratteri. Lingua principale
 | Privacy Policy URL | https://github.com/cldnpl/Receipty/blob/main/PRIVACY_POLICY.md |
 | License agreement | Apple's Standard EULA (il nostro `EULA.md` la richiama) |
 
-## Version 1.0
+## Version 1.1
+
+La 1.0 è già approvata: il suo treno è chiuso e App Store Connect rifiuta altre build con quel
+numero. Da qui in avanti ogni rilascio alza `MARKETING_VERSION` in `project.yml`.
+
+### What's New in This Version (max 4000, 362)
+
+```
+Receipty now speaks your language.
+
+• 12 languages: English, Italian, Spanish, French, German, Portuguese, Dutch, Turkish, Russian, Japanese, Korean and Simplified Chinese.
+• Pick one in Settings and the app changes on the spot, whatever your iPhone is set to.
+• Amounts, dates and currency names follow the language too, so the total reads the way you write it.
+```
 
 ### Promotional text (max 170, 157)
 
@@ -22,7 +38,7 @@ Tutti i testi della scheda, già dentro i limiti di caratteri. Lingua principale
 Dinner's over and the check just landed? Scan it, tap who had what, and Receipty shows exactly who pays whom. Paid with a big note? The change is sorted too.
 ```
 
-### Description (max 4000, 1732)
+### Description (max 4000, 1923)
 
 ```
 The check lands and everyone reaches for the calculator. Receipty ends that.
@@ -51,6 +67,7 @@ WHO PAYS WHOM
 MADE FOR THE TABLE
 • Fast, clear and easy to use with one hand, even while the waiter waits.
 • 68 currencies, including ones without decimals like yen and won.
+• 12 languages: English, Italian, Spanish, French, German, Portuguese, Dutch, Turkish, Russian, Japanese, Korean and Simplified Chinese. Pick one in Settings, whatever your iPhone is set to.
 • Light and dark mode.
 • Recent bills are kept so you can check them later. Swipe to delete.
 

@@ -5,17 +5,15 @@ struct OnboardingView: View {
     let onFinish: () -> Void
     @State private var page = 0
 
-    private let pages: [(title: String, text: String)] = [
-        ("Split the bill\nin seconds.", "Scan the receipt or type the total. Receipty tells everyone exactly who pays whom."),
-        ("Tap who had\nwhat.", "Shared a pizza? Pick both names and the price is split between them."),
-        ("Change?\nSorted.", "Paid with a big note? Receipty hands out the change and keeps transfers to a minimum."),
-    ]
+    private var pages: [(title: String, text: String)] {
+        (1...3).map { (t("onboarding.\($0).title"), t("onboarding.\($0).text")) }
+    }
 
     var body: some View {
         VStack(spacing: 0) {
             HStack {
                 Spacer()
-                Button("Skip", action: onFinish)
+                Button(t("onboarding.skip"), action: onFinish)
                     .textStyle(TextStyle(face: .semibold, size: 16))
                     .foregroundStyle(Palette.raspberryDeep)
                     .opacity(page == pages.count - 1 ? 0 : 1)
@@ -65,13 +63,13 @@ struct OnboardingView: View {
                     onFinish()
                 }
             } label: {
-                Text(page < pages.count - 1 ? "Next" : "Get started")
+                Text(t(page < pages.count - 1 ? "common.next" : "onboarding.start"))
                     .contentTransition(.opacity)
             }
             .buttonStyle(PrimaryButtonStyle())
             .padding(.horizontal, 24)
 
-            Text("No account needed · Your bills stay on this iPhone")
+            Text(t("onboarding.footer"))
                 .textStyle(TextStyle(face: .medium, size: 13))
                 .foregroundStyle(Palette.gray)
                 .padding(.top, 14)
@@ -85,7 +83,7 @@ struct OnboardingView: View {
 private struct Illustration: View {
     let page: Int
     @State private var shown = false
-    private let currency = Currency.current
+    private var currency: Currency { .current }
 
     private func money(_ cents: Int) -> String { Money.format(cents, currency) }
 
@@ -104,13 +102,13 @@ private struct Illustration: View {
 
     private var transfers: some View {
         VStack(spacing: 12) {
-            MiniCard(icon: .person("G"), title: "Giulia → Cla", subtitle: "Giulia pays Cla", amount: money(1025))
+            MiniCard(icon: .person("G"), title: "Giulia → Cla", subtitle: t("result.pays", "Giulia", "Cla"), amount: money(1025))
                 .rotationEffect(.degrees(shown ? -3 : 0))
                 .offset(x: shown ? -8 : 0)
-            MiniCard(icon: .person("M"), title: "Marco → Cla", subtitle: "Marco pays Cla", amount: money(375))
+            MiniCard(icon: .person("M"), title: "Marco → Cla", subtitle: t("result.pays", "Marco", "Cla"), amount: money(375))
                 .rotationEffect(.degrees(shown ? 2 : 0))
                 .offset(x: shown ? 10 : 0)
-            MiniCard(icon: .person("L"), title: "Luca → Cla", subtitle: "Luca pays Cla", amount: money(375))
+            MiniCard(icon: .person("L"), title: "Luca → Cla", subtitle: t("result.pays", "Luca", "Cla"), amount: money(375))
                 .rotationEffect(.degrees(shown ? -1.5 : 0))
         }
         .overlay(alignment: .topTrailing) {
@@ -128,11 +126,11 @@ private struct Illustration: View {
     private var assignment: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(alignment: .firstTextBaseline) {
-                Text("Pizza margherita").textStyle(.itemTitle).foregroundStyle(Palette.ink)
+                Text(t("onboarding.sample.item")).textStyle(.itemTitle).foregroundStyle(Palette.ink)
                 Spacer()
                 VStack(alignment: .trailing, spacing: 3) {
                     Text(money(800)).textStyle(.itemTitle).foregroundStyle(Palette.ink)
-                    Text("\(money(400)) each").textStyle(.perHead).foregroundStyle(Palette.pinkText)
+                    Text(t("common.each", money(400))).textStyle(.perHead).foregroundStyle(Palette.pinkText)
                         .opacity(shown ? 1 : 0)
                 }
             }
@@ -157,11 +155,13 @@ private struct Illustration: View {
 
     private var change: some View {
         VStack(spacing: 12) {
-            MiniCard(icon: .symbol("banknote"), title: "Change → Claudia", subtitle: "Claudia keeps it", amount: money(700))
+            MiniCard(icon: .symbol("banknote"), title: "\(t("result.change")) → Claudia",
+                     subtitle: t("result.keepsIt", "Claudia"), amount: money(700))
                 .offset(y: shown ? 0 : 20)
-            MiniCard(icon: .symbol("banknote"), title: "Change → Marco", subtitle: "Marco keeps it", amount: money(100))
+            MiniCard(icon: .symbol("banknote"), title: "\(t("result.change")) → Marco",
+                     subtitle: t("result.keepsIt", "Marco"), amount: money(100))
                 .offset(y: shown ? 0 : 30)
-            MiniCard(icon: .person("O"), title: "Olga → Marco", subtitle: "Olga pays Marco", amount: money(1300))
+            MiniCard(icon: .person("O"), title: "Olga → Marco", subtitle: t("result.pays", "Olga", "Marco"), amount: money(1300))
                 .offset(y: shown ? 0 : 40)
         }
         .opacity(shown ? 1 : 0.4)

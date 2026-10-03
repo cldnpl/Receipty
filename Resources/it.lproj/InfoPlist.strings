@@ -1,0 +1,3 @@
+/* Receipty — it. Testi di Info.plist. */
+
+"NSCameraUsageDescription" = "Receipty usa la fotocamera per leggere le voci e i prezzi del tuo scontrino. La foto non esce mai dal telefono.";

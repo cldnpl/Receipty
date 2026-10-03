@@ -45,7 +45,7 @@ struct BackButton: View {
                 .background(Circle().fill(Palette.card).shadow(color: Palette.shadow.opacity(0.10), radius: 12, y: 5))
         }
         .buttonStyle(PressableStyle(scale: 0.92))
-        .accessibilityLabel("Back")
+        .accessibilityLabel(t("common.back"))
     }
 }
 
@@ -270,7 +270,7 @@ struct SwipeToDelete<Content: View>: View {
                 Button(action: onDelete) {
                     VStack(spacing: 5) {
                         Image(systemName: "trash").font(.system(size: 18, weight: .semibold))
-                        Text("Delete").textStyle(TextStyle(face: .semibold, size: 13))
+                        Text(t("common.delete")).textStyle(TextStyle(face: .semibold, size: 13))
                     }
                     .foregroundStyle(.white)
                     .frame(width: buttonWidth, height: height)
@@ -354,7 +354,7 @@ struct AmountField: View {
                 .fixedSize()
                 .foregroundStyle(Palette.raspberry)
             TextField(text: $text, prompt: Text("0").foregroundStyle(Palette.fieldPlaceholder)) {
-                Text("Amount")
+                Text(t("common.amount"))
             }
             .textStyle(.fieldValue)
             .foregroundStyle(Palette.ink)

@@ -98,7 +98,13 @@ final class SettlementTests: XCTestCase {
         XCTAssertEqual(Set(shares.values), [333, 334])
     }
 
+    /// Gli importi si scrivono come vuole la lingua dell'app ("22,30 €" in italiano):
+    /// qui la si fissa sull'inglese, altrimenti il test dipenderebbe dall'iPhone che lo esegue.
     func testMoneyFormatting() {
+        let language = I18n.shared.language
+        I18n.shared.language = .english
+        defer { I18n.shared.language = language }
+
         let eur = Currency(code: "EUR")
         XCTAssertEqual(Money.format(2230, eur), "€22.30")
         XCTAssertEqual(Money.format(123450, eur), "€1,234.50")

@@ -1,0 +1,3 @@
+/* Receipty — pt-BR. Testi di Info.plist. */
+
+"NSCameraUsageDescription" = "O Receipty usa a câmera para ler os itens e os preços do seu recibo. A foto nunca sai do seu telefone.";

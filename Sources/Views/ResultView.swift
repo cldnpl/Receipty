@@ -61,7 +61,7 @@ struct ResultView: View {
                             withAnimation(.snappy) { copied = false }
                         }
                     } label: {
-                        Text(copied ? "Copied" : "Copy summary")
+                        Text(t(copied ? "result.copied" : "result.copy"))
                             .textStyle(TextStyle(face: .medium, size: 16))
                             .foregroundStyle(Palette.ink)
                             .contentTransition(.opacity)
@@ -73,7 +73,7 @@ struct ResultView: View {
                     .frame(width: 153)
 
                     Button(action: onDone) {
-                        Text("Done")
+                        Text(t("common.done"))
                             .textStyle(TextStyle(face: .semibold, size: 17))
                             .foregroundStyle(Palette.inverseText)
                             .frame(maxWidth: .infinity)
@@ -102,7 +102,7 @@ struct ResultView: View {
             SuccessMark(drawn: appeared)
                 .padding(.top, 19)
 
-            Text("You're all set.")
+            Text(t("result.title"))
                 .textStyle(.resultTitle)
                 .foregroundStyle(Palette.ink)
                 .padding(.top, 5)
@@ -118,7 +118,7 @@ struct ResultView: View {
                 .padding(.leading, 1)
 
             if settlement.change > 0 {
-                SectionLabel(text: "Change back · \(Money.format(settlement.change, currency))")
+                SectionLabel(text: t("result.changeBack", Money.format(settlement.change, currency)))
                     .padding(.top, 22)
                 VStack(spacing: 10.5) {
                     ForEach(Array(settlement.changeSplit.enumerated()), id: \.element.id) { index, share in
@@ -130,7 +130,7 @@ struct ResultView: View {
                 .padding(.horizontal, -4)
 
                 if !settlement.transfers.isEmpty {
-                    SectionLabel(text: "Then")
+                    SectionLabel(text: t("result.then"))
                         .padding(.top, 20)
                 }
             }
@@ -144,7 +144,7 @@ struct ResultView: View {
             .padding(.top, settlement.change > 0 ? 10 : 24)
             .padding(.horizontal, -4)
 
-            Button("How we got here") { showingBreakdown = true }
+            Button(t("result.breakdown")) { showingBreakdown = true }
                 .textStyle(.smallLink)
                 .foregroundStyle(Palette.raspberryDeep)
                 .frame(maxWidth: .infinity)
@@ -159,30 +159,31 @@ struct ResultView: View {
         if settlement.change > 0 {
             let change = Money.format(settlement.change, currency)
             switch settlement.transfers.count {
-            case 0: return "Hand out the \(change) change like this and the \(total) bill is settled."
-            case 1: return "Hand out the \(change) change like this, then one transfer settles the bill."
-            case let n: return "Hand out the \(change) change like this, then \(n) transfers settle the bill."
+            case 0: return t("result.subtitle.change.none", change, total)
+            case 1: return t("result.subtitle.change.one", change)
+            case let n: return t("result.subtitle.change.many", change, n)
             }
         }
         switch settlement.transfers.count {
-        case 0: return "Everyone already paid their share of the \(total) bill. Nobody owes a thing."
-        case 1: return "Just one transfer to settle a \(total) bill."
-        case let n: return "Just \(n) transfers to settle a \(total) bill."
+        case 0: return t("result.subtitle.none", total)
+        case 1: return t("result.subtitle.one", total)
+        case let n: return t("result.subtitle.many", n, total)
         }
     }
 
     private var summary: String {
-        var lines = ["Receipty · \(DateText.short(date))", "\(Money.format(settlement.total, currency)) bill, \(settlement.lines.count) people", ""]
+        var lines = [t("summary.header", DateText.short(date)),
+                     t("summary.bill", Money.format(settlement.total, currency), settlement.lines.count), ""]
         if settlement.change > 0 {
-            lines.append("Change back: \(Money.format(settlement.change, currency))")
+            lines.append(t("summary.changeBack", Money.format(settlement.change, currency)))
             for share in settlement.changeSplit {
-                lines.append("\(share.person.name) keeps \(Money.format(share.cents, currency)) of the change")
+                lines.append(t("result.keepsChange", share.person.name, Money.format(share.cents, currency)))
             }
             lines.append("")
-            if !settlement.transfers.isEmpty { lines.append("Then:") }
+            if !settlement.transfers.isEmpty { lines.append(t("summary.then")) }
         }
         if settlement.transfers.isEmpty && settlement.change == 0 {
-            lines.append("All square: nobody owes a thing.")
+            lines.append(t("summary.allSquare"))
         } else {
             for t in settlement.transfers {
                 lines.append("\(t.from.name) → \(t.to.name): \(Money.format(t.cents, currency))")
@@ -231,7 +232,7 @@ private struct ChangeCard: View {
                 .background(Circle().fill(Palette.pinkSoft))
             VStack(alignment: .leading, spacing: 0) {
                 HStack(spacing: 6.5) {
-                    Text("Change")
+                    Text(t("result.change"))
                         .foregroundStyle(Palette.raspberry)
                     Image(systemName: "arrow.right")
                         .font(.system(size: 13, weight: .semibold))
@@ -242,7 +243,7 @@ private struct ChangeCard: View {
                 .textStyle(.transferName)
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
-                Text("\(share.person.name) keeps it")
+                Text(t("result.keepsIt", share.person.name))
                     .textStyle(.transferSub)
                     .foregroundStyle(Palette.gray)
                     .lineLimit(1)
@@ -260,7 +261,7 @@ private struct ChangeCard: View {
         .frame(height: 76)
         .card(radius: 26)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(share.person.name) keeps \(Money.format(share.cents, currency)) of the change")
+        .accessibilityLabel(t("result.keepsChange", share.person.name, Money.format(share.cents, currency)))
     }
 }
 
@@ -315,7 +316,7 @@ private struct TransferCard: View {
                 .foregroundStyle(Palette.ink)
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
-                Text("\(transfer.from.name) pays \(transfer.to.name)")
+                Text(t("result.pays", transfer.from.name, transfer.to.name))
                     .textStyle(.transferSub)
                     .foregroundStyle(Palette.gray)
                     .lineLimit(1)
@@ -332,7 +333,8 @@ private struct TransferCard: View {
         .frame(height: 76)
         .card(radius: 26)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(transfer.from.name) pays \(transfer.to.name) \(Money.format(transfer.cents, currency))")
+        .accessibilityLabel(t("result.paysAmount", transfer.from.name, transfer.to.name,
+                                  Money.format(transfer.cents, currency)))
     }
 }
 
@@ -343,11 +345,11 @@ private struct BreakdownSheet: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text("How we got here")
+            Text(t("result.breakdown"))
                 .textStyle(.sheetTitle)
                 .foregroundStyle(Palette.ink)
                 .padding(.top, 30)
-            Text("For each person: their share of the bill, what they paid, and the difference.")
+            Text(t("breakdown.subtitle"))
                 .textStyle(TextStyle(face: .regular, size: 15, lineHeight: 21))
                 .foregroundStyle(Palette.inkSoft)
                 .fixedSize(horizontal: false, vertical: true)
@@ -363,9 +365,10 @@ private struct BreakdownSheet: View {
                                     .textStyle(.personNameStrong)
                                     .foregroundStyle(Palette.ink)
                                 Group {
-                                    Text("Share \(Money.format(line.owed, currency)) · paid \(Money.format(line.paid, currency))")
+                                    Text(t("breakdown.line", Money.format(line.owed, currency),
+                                            Money.format(line.paid, currency)))
                                     if line.changeKept > 0 {
-                                        Text("Kept \(Money.format(line.changeKept, currency)) of the change")
+                                        Text(t("breakdown.kept", Money.format(line.changeKept, currency)))
                                     }
                                 }
                                 .textStyle(TextStyle(face: .medium, size: 12.5))
@@ -378,7 +381,8 @@ private struct BreakdownSheet: View {
                                 Text((line.balance > 0 ? "+" : "") + Money.format(line.balance, currency))
                                     .textStyle(TextStyle(face: .bold, size: 17))
                                     .foregroundStyle(line.balance > 0 ? Palette.successText : line.balance < 0 ? Palette.raspberry : Palette.gray)
-                                Text(line.balance > 0 ? "gets back" : line.balance < 0 ? "owes" : "even")
+                                Text(t(line.balance > 0 ? "breakdown.getsBack"
+                                           : line.balance < 0 ? "breakdown.owes" : "breakdown.even"))
                                     .textStyle(TextStyle(face: .medium, size: 12))
                                     .foregroundStyle(Palette.gray)
                             }

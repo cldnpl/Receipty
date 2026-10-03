@@ -23,13 +23,13 @@ struct RootView: View {
                                     .toolbar(.hidden, for: .tabBar)
                             }
                     }
-                    .tabItem { Label("Bills", systemImage: "receipt") }
+                    .tabItem { Label(t("tab.bills"), systemImage: "receipt") }
                     .tag(AppTab.bills)
 
                     NavigationStack(path: $settingsPath) {
                         SettingsView(path: $settingsPath) { replayTutorial() }
                     }
-                    .tabItem { Label("Settings", systemImage: "gearshape") }
+                    .tabItem { Label(t("tab.settings"), systemImage: "gearshape") }
                     .tag(AppTab.settings)
                 }
                 .tint(Palette.raspberry)
@@ -39,7 +39,7 @@ struct RootView: View {
                         .ignoresSafeArea()
                         .onTapGesture { app.showingNewBill = false }
                         .transition(.opacity)
-                        .accessibilityLabel("Close")
+                        .accessibilityLabel(t("common.close"))
                         .accessibilityAddTraits(.isButton)
 
                     NewBillSheet()
@@ -84,6 +84,7 @@ struct RootView: View {
             case "tutorial": startTutorial()
             case "settings": tab = .settings
             case "currency": tab = .settings; settingsPath = [.currency]
+            case "language": tab = .settings; settingsPath = [.language]
             default: break
             }
             #endif

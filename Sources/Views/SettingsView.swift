@@ -5,13 +5,7 @@ enum Appearance: String, CaseIterable, Identifiable {
     case system, light, dark
     var id: String { rawValue }
 
-    var title: String {
-        switch self {
-        case .system: "System"
-        case .light: "Light"
-        case .dark: "Dark"
-        }
-    }
+    var title: String { t("appearance.\(rawValue)") }
 
     var colorScheme: ColorScheme? {
         switch self {
@@ -24,6 +18,7 @@ enum Appearance: String, CaseIterable, Identifiable {
 
 enum SettingsRoute: Hashable {
     case currency
+    case language
 }
 
 /// Privacy policy ed EULA stanno nella repo pubblica (gli stessi URL vanno in App Store Connect):
@@ -46,25 +41,35 @@ struct SettingsView: View {
     @State private var document: LegalDocument?
 
     private var currency: Currency { Currency(code: currencyCode) }
+    private var language: AppLanguage { I18n.shared.language }
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                Text("Settings")
+                Text(t("settings.title"))
                     .textStyle(.hero)
                     .foregroundStyle(Palette.ink)
                     .padding(.leading, 6)
                     .padding(.top, 8)
                     .accessibilityAddTraits(.isHeader)
 
-                SettingsSection(title: "Appearance") {
+                SettingsSection(title: t("settings.appearance")) {
                     AppearancePicker(selection: $appearance)
                         .padding(8)
                 }
                 .padding(.top, 30)
 
-                SettingsSection(title: "Currency",
-                                footer: "Used for new bills. Bills you already split keep their own currency.") {
+                SettingsSection(title: t("settings.language"), footer: t("settings.language.footer")) {
+                    Button { path.append(.language) } label: {
+                        SettingsRow(title: language.nativeName, detail: language.localizedName) {
+                            SettingsIcon(systemName: "globe")
+                        }
+                    }
+                    .buttonStyle(PressableStyle(scale: 0.98))
+                }
+                .padding(.top, 22)
+
+                SettingsSection(title: t("settings.currency"), footer: t("settings.currency.footer")) {
                     Button { path.append(.currency) } label: {
                         SettingsRow(title: currency.name, detail: currency.code) {
                             CurrencyBadge(currency: currency)
@@ -74,21 +79,21 @@ struct SettingsView: View {
                 }
                 .padding(.top, 22)
 
-                SettingsSection(title: "About") {
+                SettingsSection(title: t("settings.about")) {
                     VStack(spacing: 0) {
                         Button { document = .privacy } label: {
-                            SettingsRow(title: "Privacy Policy", external: true) { SettingsIcon(systemName: "hand.raised") }
+                            SettingsRow(title: t("settings.privacy"), external: true) { SettingsIcon(systemName: "hand.raised") }
                         }
                         RowDivider()
                         Button { document = .eula } label: {
-                            SettingsRow(title: "Terms of Use (EULA)", external: true) { SettingsIcon(systemName: "doc.text") }
+                            SettingsRow(title: t("settings.eula"), external: true) { SettingsIcon(systemName: "doc.text") }
                         }
                         RowDivider()
                         Button(action: onReplayTutorial) {
-                            SettingsRow(title: "Replay tutorial", chevron: false) { SettingsIcon(systemName: "sparkles") }
+                            SettingsRow(title: t("settings.replayTutorial"), chevron: false) { SettingsIcon(systemName: "sparkles") }
                         }
                         RowDivider()
-                        SettingsRow(title: "Version", detail: AppInfo.version, chevron: false) {
+                        SettingsRow(title: t("settings.version"), detail: AppInfo.version, chevron: false) {
                             SettingsIcon(systemName: "info")
                         }
                     }
@@ -96,7 +101,7 @@ struct SettingsView: View {
                 }
                 .padding(.top, 22)
 
-                Text("No account, no ads, no tracking.\nYour bills stay on this iPhone.")
+                Text(t("settings.footer"))
                     .textStyle(TextStyle(face: .medium, size: 13.5, lineHeight: 19))
                     .foregroundStyle(Palette.gray)
                     .multilineTextAlignment(.center)
@@ -114,6 +119,7 @@ struct SettingsView: View {
         .navigationDestination(for: SettingsRoute.self) { route in
             switch route {
             case .currency: CurrencyPickerView(selection: $currencyCode)
+            case .language: LanguagePickerView()
             }
         }
         .sheet(item: $document) { doc in
@@ -295,14 +301,14 @@ struct CurrencyPickerView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            FlowHeader(title: "CURRENCY", subtitle: "Pick the currency on your receipts.")
+            FlowHeader(title: t("currency.title"), subtitle: t("currency.subtitle"))
 
             HStack(spacing: 10) {
                 Image(systemName: "magnifyingglass")
                     .font(.system(size: 16, weight: .medium))
                     .foregroundStyle(Palette.placeholder)
-                TextField(text: $query, prompt: Text("Search currency or code").foregroundStyle(Palette.placeholder)) {
-                    Text("Search")
+                TextField(text: $query, prompt: Text(t("currency.search")).foregroundStyle(Palette.placeholder)) {
+                    Text(t("common.search"))
                 }
                 .textStyle(TextStyle(face: .regular, size: 17))
                 .foregroundStyle(Palette.ink)
@@ -318,9 +324,9 @@ struct CurrencyPickerView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
                     if !searching {
-                        sectionTitle("Popular")
+                        sectionTitle(t("currency.popular"))
                         list(popular)
-                        sectionTitle("All currencies")
+                        sectionTitle(t("currency.all"))
                             .padding(.top, 22)
                     }
                     list(results)
@@ -384,6 +390,90 @@ struct CurrencyPickerView: View {
             }
         }
         .card(radius: 26)
+    }
+}
+
+// MARK: - Lingua
+
+/// La lingua dell'interfaccia. Ogni voce è scritta nella propria lingua, così si riconosce
+/// anche arrivando qui per sbaglio con l'app in una lingua che non si capisce.
+struct LanguagePickerView: View {
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        VStack(spacing: 0) {
+            FlowHeader(title: t("language.title"), subtitle: t("language.subtitle"))
+
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    ForEach(AppLanguage.allCases) { language in
+                        let on = language == I18n.shared.language
+                        Button {
+                            Haptics.select()
+                            I18n.shared.language = language
+                            dismiss()
+                        } label: {
+                            HStack(spacing: 14) {
+                                LanguageBadge(language: language)
+                                VStack(alignment: .leading, spacing: 1) {
+                                    Text(language.nativeName)
+                                        .textStyle(.personName)
+                                        .foregroundStyle(Palette.ink)
+                                    if let subtitle = language.localizedName {
+                                        Text(subtitle)
+                                            .textStyle(TextStyle(face: .medium, size: 13))
+                                            .foregroundStyle(Palette.gray)
+                                    }
+                                }
+                                Spacer(minLength: 8)
+                                if on {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .font(.system(size: 21))
+                                        .foregroundStyle(Palette.pink)
+                                }
+                            }
+                            .padding(.horizontal, 16)
+                            .frame(minHeight: 62)
+                            .contentShape(Rectangle())
+                        }
+                        .buttonStyle(PressableStyle(scale: 0.98))
+                        .accessibilityAddTraits(on ? .isSelected : [])
+                        if language != AppLanguage.allCases.last {
+                            RowDivider()
+                        }
+                    }
+                }
+                .card(radius: 26)
+                .padding(.horizontal, 20)
+                .padding(.top, 18)
+                .padding(.bottom, 30)
+            }
+            .scrollIndicators(.hidden)
+            .plainScrollEdges()
+            .topFade(14)
+        }
+        .background(BackdropView())
+        .toolbar(.hidden, for: .navigationBar)
+    }
+}
+
+/// "IT", "EN", "日本" — oppure il globo per la lingua dell'iPhone.
+private struct LanguageBadge: View {
+    let language: AppLanguage
+
+    var body: some View {
+        Group {
+            if language == .system {
+                Image(systemName: "globe").font(.system(size: 15, weight: .medium))
+            } else {
+                Text(language.rawValue.prefix(2).uppercased())
+                    .font(.custom(Inter.bold.rawValue, size: 13))
+            }
+        }
+        .foregroundStyle(Palette.raspberry)
+        .frame(width: 36, height: 36)
+        .background(Circle().fill(Palette.pinkSoft))
+        .accessibilityHidden(true)
     }
 }
 

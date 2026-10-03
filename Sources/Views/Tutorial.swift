@@ -23,21 +23,9 @@ final class Coach {
             }
         }
 
-        var title: String {
-            switch self {
-            case .plus: "Start here"
-            case .scan: "Got the receipt?"
-            case .manual: "No receipt?"
-            }
-        }
+        var title: String { t("coach.\(rawValue + 1).title") }
 
-        var message: String {
-            switch self {
-            case .plus: "Tap + when the bill arrives."
-            case .scan: "Scan it. Receipty reads every item, then you tap who had what."
-            case .manual: "Type the total and who paid. It's split equally, change included. Your bills stay on this iPhone."
-            }
-        }
+        var message: String { t("coach.\(rawValue + 1).message") }
 
         /// Al primo passo si tocca davvero il +: il buco nella patina lascia passare il tocco.
         var tapThrough: Bool { self == .plus }
@@ -175,11 +163,11 @@ struct CoachOverlay: View {
     private func callout(step: Coach.Step) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
-                Text("\(step.rawValue + 1) of \(Coach.Step.allCases.count)")
+                Text(t("coach.step", step.rawValue + 1, Coach.Step.allCases.count))
                     .textStyle(TextStyle(face: .semibold, size: 13))
                     .foregroundStyle(Palette.raspberry)
                 Spacer()
-                Button("Skip tutorial", action: onSkip)
+                Button(t("coach.skip"), action: onSkip)
                     .textStyle(TextStyle(face: .semibold, size: 14))
                     .foregroundStyle(Palette.gray)
             }
@@ -197,7 +185,7 @@ struct CoachOverlay: View {
                 Button {
                     onNext(step)
                 } label: {
-                    Text(step == .manual ? "Got it" : step.tapThrough ? "Show me" : "Next")
+                    Text(t(step == .manual ? "coach.gotIt" : step.tapThrough ? "coach.showMe" : "common.next"))
                         .textStyle(TextStyle(face: .bold, size: 16))
                         .foregroundStyle(.white)
                         .padding(.horizontal, 22)

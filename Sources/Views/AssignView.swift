@@ -7,7 +7,7 @@ struct AssignView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            FlowHeader(title: "WHO ORDERED\nWHAT?", subtitle: "Tap the names. Pick more than one\nand the price is split between them.")
+            FlowHeader(title: t("assign.title"), subtitle: t("assign.subtitle"))
 
             ScrollView {
                 LazyVStack(spacing: 12) {
@@ -28,7 +28,7 @@ struct AssignView: View {
             BottomBar {
                 RunningTotals(draft: draft)
                     .padding(.bottom, 14)
-                Button("Who paid?") { app.path.append(.payments) }
+                Button(t("people.whoPaid")) { app.path.append(.payments) }
                     .buttonStyle(PrimaryButtonStyle())
                     .disabled(draft.unassignedCount > 0)
                 Caption(text: caption)
@@ -42,9 +42,9 @@ struct AssignView: View {
 
     private var caption: String {
         switch draft.unassignedCount {
-        case 0: return "Every item has an owner"
-        case 1: return "1 item with nobody on it"
-        case let n: return "\(n) items with nobody on them"
+        case 0: return t("assign.caption.ok")
+        case 1: return t("assign.caption.one")
+        case let n: return t("assign.caption.many", n)
         }
     }
 }
@@ -68,7 +68,7 @@ private struct AssignCard: View {
                         HStack(spacing: 6) {
                             Text("\(item.quantity) × \(Money.format(item.cents / item.quantity, currency))")
                                 .foregroundStyle(Palette.gray)
-                            Button("Split") { split() }
+                            Button(t("assign.split")) { split() }
                                 .foregroundStyle(Palette.pinkText)
                         }
                         .textStyle(.perHead)
@@ -80,7 +80,7 @@ private struct AssignCard: View {
                         .textStyle(.itemTitle)
                         .foregroundStyle(Palette.ink)
                     if assigned.count > 1 {
-                        Text("\(Money.format(Int((Double(item.cents) / Double(assigned.count)).rounded()), currency)) each")
+                        Text(t("common.each", Money.format(Int((Double(item.cents) / Double(assigned.count)).rounded()), currency)))
                             .textStyle(.perHead)
                             .foregroundStyle(Palette.pinkText)
                             .contentTransition(.numericText())
@@ -109,7 +109,7 @@ private struct AssignCard: View {
                         draft.toggleEveryone(on: item.id)
                     }
                 } label: {
-                    Text("All")
+                    Text(t("assign.all"))
                         .textStyle(.chip)
                         .foregroundStyle(everyone ? Color.white : Palette.chipText)
                         .padding(.horizontal, 14)

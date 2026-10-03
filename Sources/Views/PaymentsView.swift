@@ -16,7 +16,7 @@ struct PaymentsView: View {
     var body: some View {
         VStack(spacing: 0) {
             // La spiegazione serve prima di scrivere: con la tastiera aperta si toglie e lascia spazio alle righe.
-            FlowHeader(title: "WHO PAID?",
+            FlowHeader(title: t("payments.title"),
                        subtitle: focus == nil ? instructions : nil,
                        example: focus == nil ? example : nil)
 
@@ -66,7 +66,7 @@ struct PaymentsView: View {
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
                 Spacer()
-                Button("Done") { focus = nil }
+                Button(t("common.done")) { focus = nil }
                     .font(.custom(Inter.semibold.rawValue, size: 16))
             }
         }
@@ -76,9 +76,7 @@ struct PaymentsView: View {
         .onChange(of: focus) { old, _ in
             // "52" diventa "52.00" quando si esce dal campo del totale.
             if old == .total, let cents = Money.parse(draft.equalTotalText), cents > 0 {
-                draft.equalTotalText = currency.minorDigits == 0
-                    ? String(cents / 100)
-                    : String(format: "%d.%02d", cents / 100, cents % 100)
+                draft.equalTotalText = Money.editableFixed(cents, decimals: currency.minorDigits > 0)
             }
         }
     }
@@ -93,7 +91,7 @@ struct PaymentsView: View {
                 } label: {
                     HStack(spacing: 13) {
                         CalculatorIcon(color: draft.canSettle ? .white : Palette.disabledText)
-                        Text("Calculate")
+                        Text(t("payments.calculate"))
                     }
                 }
                 .buttonStyle(PrimaryButtonStyle())
@@ -102,14 +100,12 @@ struct PaymentsView: View {
     }
 
     private var instructions: String {
-        draft.source.isItemized
-            ? "Next to each name, write what they're putting in."
-            : "Enter the total, then next to each name what they're putting in."
+        t(draft.source.isItemized ? "payments.instructions.itemized" : "payments.instructions.equal")
     }
 
     private var example: String {
-        let name = draft.people.first?.name ?? "Anna"
-        return "E.g. total 50, \(name) pays with a 50 note → 50 next to \(name)."
+        let name = draft.people.first?.name ?? t("payments.example.name")
+        return t("payments.example", name, name)
     }
 
     private func binding(for person: Person) -> Binding<String> {
@@ -120,21 +116,21 @@ struct PaymentsView: View {
     private var status: (text: String, ok: Bool) {
         let total = draft.total
         let paid = draft.paidTotal
-        if total == 0 { return ("Enter the bill total", false) }
-        if paid == total { return ("It all adds up", true) }
-        if paid < total { return ("\(Money.format(total - paid, currency)) still missing", false) }
+        if total == 0 { return (t("payments.status.enterTotal"), false) }
+        if paid == total { return (t("payments.status.ok"), true) }
+        if paid < total { return (t("payments.status.missing", Money.format(total - paid, currency)), false) }
         let change = paid - total
         // Più di €100 di resto e più del conto stesso: quasi sempre un importo scritto male.
         if change > 10_000 && change > total {
-            return ("\(Money.format(change, currency)) in change? Check the amounts", false)
+            return (t("payments.status.changeHigh", Money.format(change, currency)), false)
         }
-        return ("\(Money.format(change, currency)) comes back in change", true)
+        return (t("payments.status.change", Money.format(change, currency)), true)
     }
 
     @ViewBuilder
     private var totalCard: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text("Bill total")
+            Text(t("payments.total"))
                 .textStyle(TextStyle(face: .medium, size: 14))
                 .foregroundStyle(Palette.raspberry)
 
@@ -143,7 +139,9 @@ struct PaymentsView: View {
                     .textStyle(.bigAmount)
                     .foregroundStyle(Palette.ink)
                     .padding(.top, 5)
-                Text("\(draft.source == .scan ? "From the receipt" : "Typed in") · \(draft.items.count) \(draft.items.count == 1 ? "item" : "items")")
+                Text(t("payments.source.items",
+                        t(draft.source == .scan ? "payments.source.scan" : "payments.source.typed"),
+                        draft.items.count))
                     .textStyle(TextStyle(face: .regular, size: 14))
                     .foregroundStyle(Palette.gray)
                     .padding(.top, 6)
@@ -152,8 +150,10 @@ struct PaymentsView: View {
                     Text(currency.symbol)
                         .textStyle(TextStyle(face: .extraBold, size: 44, tracking: -0.02))
                         .foregroundStyle(Palette.pink)
-                    TextField(text: $draft.equalTotalText, prompt: Text("0.00").foregroundStyle(Palette.fieldPlaceholder.opacity(0.6))) {
-                        Text("Bill total")
+                    TextField(text: $draft.equalTotalText,
+                              prompt: Text(Money.editableFixed(0, decimals: currency.minorDigits > 0))
+                                  .foregroundStyle(Palette.fieldPlaceholder.opacity(0.6))) {
+                        Text(t("payments.total"))
                     }
                     .textStyle(TextStyle(face: .extraBold, size: 45.5, tracking: -0.02))
                     .foregroundStyle(Palette.ink)
@@ -183,10 +183,10 @@ struct PaymentsView: View {
 
     private var splitLine: String {
         let n = draft.people.count
-        guard draft.total > 0, n > 0 else { return "Split \(n) ways: enter the total" }
+        guard draft.total > 0, n > 0 else { return t("payments.split.noTotal", n) }
         let each = Double(draft.total) / Double(n)
         let rounded = Int(each.rounded())
-        return "Split \(n) ways: \(Money.format(rounded, currency)) each"
+        return t("payments.split", n, Money.format(rounded, currency))
     }
 }
 
@@ -207,21 +207,21 @@ private struct PayerRow: View {
                     .foregroundStyle(Palette.ink)
                     .lineLimit(1)
                 if let consumed {
-                    Text("Ordered\n\(Money.format(consumed, currency))")
+                    Text(t("payments.ordered", Money.format(consumed, currency)))
                         .textStyle(TextStyle(face: .medium, size: 12, lineHeight: 14.3))
                         .foregroundStyle(Palette.gray)
                 }
             }
             .padding(.leading, 9.5)
             Spacer(minLength: 6)
-            Button("All", action: onEverything)
+            Button(t("payments.all"), action: onEverything)
                 .textStyle(TextStyle(face: .semibold, size: 14))
                 .foregroundStyle(Palette.raspberry)
                 .padding(.horizontal, 11.5)
                 .frame(height: 35)
                 .background(Capsule().fill(Palette.pinkSoft))
                 .buttonStyle(PressableStyle(scale: 0.92))
-                .accessibilityLabel("\(person.name) paid everything")
+                .accessibilityLabel(t("payments.paidEverything", person.name))
             AmountField(text: $text)
                 .focused(focus, equals: .person(person.id))
                 .padding(.leading, 10.5)

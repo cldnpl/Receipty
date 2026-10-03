@@ -11,8 +11,8 @@ struct ReviewView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            FlowHeader(title: typed ? "WHAT DID\nYOU ORDER?" : "LOOKS RIGHT?",
-                       subtitle: typed ? "Add the items on the receipt, one per line." : "Tap an item to fix it.")
+            FlowHeader(title: t(typed ? "review.title.typed" : "review.title.scan"),
+                       subtitle: t(typed ? "review.subtitle.typed" : "review.subtitle.scan"))
 
             ScrollView {
                 itemsCard
@@ -27,7 +27,7 @@ struct ReviewView: View {
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
             BottomBar {
-                Button("Continue") { app.path.append(.people) }
+                Button(t("common.continue")) { app.path.append(.people) }
                     .buttonStyle(PrimaryButtonStyle())
                     .disabled(draft.items.isEmpty || draft.itemsToCheck > 0)
                 Caption(text: caption)
@@ -54,11 +54,11 @@ struct ReviewView: View {
     }
 
     private var caption: String {
-        if draft.items.isEmpty { return "Add at least one item" }
+        if draft.items.isEmpty { return t("review.caption.empty") }
         switch draft.itemsToCheck {
-        case 0: return draft.items.count == 1 ? "1 item" : "\(draft.items.count) items"
-        case 1: return "Check the highlighted item"
-        case let n: return "Check the \(n) highlighted items"
+        case 0: return draft.items.count == 1 ? t("review.caption.one") : t("review.caption.many", draft.items.count)
+        case 1: return t("review.caption.check.one")
+        case let n: return t("review.caption.check.many", n)
         }
     }
 
@@ -77,7 +77,7 @@ struct ReviewView: View {
             Button { editing = EditorTarget(item: nil) } label: {
                 HStack(spacing: 10) {
                     Image(systemName: "plus").font(.system(size: 17, weight: .semibold))
-                    Text("Add item").textStyle(TextStyle(face: .semibold, size: 16))
+                    Text(t("review.addItem")).textStyle(TextStyle(face: .semibold, size: 16))
                     Spacer()
                 }
                 .foregroundStyle(Palette.pinkText)
@@ -94,7 +94,7 @@ struct ReviewView: View {
                 .padding(.top, 3)
 
             HStack(alignment: .firstTextBaseline) {
-                Text(typed ? "Total" : "Recognized total")
+                Text(t(typed ? "review.total" : "review.total.recognized"))
                     .textStyle(.totalLabel)
                     .foregroundStyle(Palette.gray)
                 Spacer()
@@ -109,7 +109,7 @@ struct ReviewView: View {
             if let printed = draft.printedTotal, printed != draft.itemsTotal {
                 HStack(spacing: 6) {
                     Image(systemName: "exclamationmark.circle").font(.system(size: 13, weight: .medium))
-                    Text("The receipt says \(Money.format(printed, currency))")
+                    Text(t("review.printedTotal", Money.format(printed, currency)))
                         .textStyle(.rowWarning)
                     Spacer()
                 }
@@ -144,7 +144,7 @@ private struct ItemRow: View {
                 if let issue = item.issue {
                     HStack(spacing: 5) {
                         Image(systemName: "exclamationmark.circle").font(.system(size: 13.5, weight: .medium))
-                        Text(issue == .name ? "Name hard to read" : "Check the price")
+                        Text(t(issue == .name ? "review.issue.name" : "review.issue.price"))
                             .textStyle(.rowWarning)
                     }
                     .foregroundStyle(Palette.warning)
@@ -164,7 +164,7 @@ private struct ItemRow: View {
         .padding(.vertical, item.issue == nil ? 0 : 2)
         .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
-        .accessibilityHint("Tap to edit")
+        .accessibilityHint(t("review.editHint"))
     }
 }
 
@@ -204,7 +204,7 @@ struct ItemEditor: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text(original == nil ? "New item" : "Edit item")
+            Text(t(original == nil ? "item.new" : "item.edit"))
                 .textStyle(.sheetTitle)
                 .foregroundStyle(Palette.ink)
                 .padding(.top, 28)
@@ -212,15 +212,15 @@ struct ItemEditor: View {
             if let issue = original?.issue {
                 HStack(spacing: 6) {
                     Image(systemName: "exclamationmark.circle").font(.system(size: 13.5, weight: .medium))
-                    Text(issue == .name ? "The name was hard to read: check it." : "The price was hard to read: compare it with the receipt.")
+                    Text(t(issue == .name ? "item.issue.name" : "item.issue.price"))
                         .textStyle(.rowWarning)
                 }
                 .foregroundStyle(Palette.warning)
                 .padding(.top, 8)
             }
 
-            Text("Name").editorLabel().padding(.top, 20)
-            TextField(text: $name, prompt: Text("E.g. Margherita pizza").foregroundStyle(Palette.placeholder)) { Text("Name") }
+            Text(t("item.name")).editorLabel().padding(.top, 20)
+            TextField(text: $name, prompt: Text(t("item.name.placeholder")).foregroundStyle(Palette.placeholder)) { Text(t("item.name")) }
                 .textStyle(TextStyle(face: .medium, size: 17))
                 .foregroundStyle(Palette.ink)
                 .focused($focus, equals: .name)
@@ -232,7 +232,7 @@ struct ItemEditor: View {
 
             HStack(alignment: .bottom, spacing: 12) {
                 VStack(alignment: .leading, spacing: 0) {
-                    Text("Quantity").editorLabel()
+                    Text(t("item.quantity")).editorLabel()
                     HStack(spacing: 0) {
                         stepperButton("minus") { quantity = max(1, quantity - 1) }
                             .disabled(quantity <= 1)
@@ -249,12 +249,12 @@ struct ItemEditor: View {
                     .animation(.snappy, value: quantity)
                 }
                 VStack(alignment: .leading, spacing: 0) {
-                    Text("Line total").editorLabel()
+                    Text(t("item.lineTotal")).editorLabel()
                     HStack(spacing: 6) {
                         Text(currency.symbol)
                             .font(.custom(Inter.semibold.rawValue, size: 18))
                             .foregroundStyle(Palette.raspberry)
-                        TextField(text: $price, prompt: Text("0.00").foregroundStyle(Palette.fieldPlaceholder)) { Text("Price") }
+                        TextField(text: $price, prompt: Text(Money.editableFixed(0, decimals: currency.minorDigits > 0)).foregroundStyle(Palette.fieldPlaceholder)) { Text(t("item.price")) }
                             .textStyle(TextStyle(face: .bold, size: 19))
                             .foregroundStyle(Palette.ink)
                             .keyboardType(.decimalPad)
@@ -273,7 +273,7 @@ struct ItemEditor: View {
             .padding(.top, 16)
 
             if quantity > 1, let c = cents {
-                Text("\(Money.format(c / quantity, currency)) each")
+                Text(t("common.each", Money.format(c / quantity, currency)))
                     .textStyle(.micro)
                     .foregroundStyle(Palette.gray)
                     .frame(maxWidth: .infinity, alignment: .trailing)
@@ -289,7 +289,7 @@ struct ItemEditor: View {
                         onDelete(original.id)
                         dismiss()
                     } label: {
-                        Text("Delete")
+                        Text(t("common.delete"))
                             .textStyle(TextStyle(face: .semibold, size: 17))
                             .foregroundStyle(Palette.warning)
                             .frame(maxWidth: .infinity)
@@ -299,7 +299,7 @@ struct ItemEditor: View {
                     .buttonStyle(PressableStyle())
                     .frame(width: 130)
                 }
-                Button(original == nil ? "Add" : "Confirm") {
+                Button(t(original == nil ? "common.add" : "common.confirm")) {
                     guard let cents else { return }
                     var item = original ?? BillItem(name: "", cents: 0)
                     item.name = name.trimmingCharacters(in: .whitespaces)

@@ -3,11 +3,20 @@ import Foundation
 /// Tutti gli importi dell'app sono centesimi interi: niente errori di arrotondamento
 /// tra quello che si vede e quello che si somma.
 enum Money {
-    /// Per i campi di testo: 1200 → "12", 1250 → "12.50".
+    /// Il separatore decimale della lingua dell'app: "." in inglese, "," in italiano.
+    static var separator: String { I18n.shared.decimalSeparator }
+
+    /// Per i campi di testo: 1200 → "12", 1250 → "12.50" (o "12,50").
     static func editable(_ cents: Int) -> String {
         let value = abs(cents)
         let whole = (cents < 0 ? "-" : "") + String(value / 100)
-        return value % 100 == 0 ? whole : whole + "." + String(format: "%02d", value % 100)
+        return value % 100 == 0 ? whole : whole + separator + String(format: "%02d", value % 100)
+    }
+
+    /// 1250 → "12.50" / "12,50": quello che resta nel campo quando si smette di scrivere.
+    static func editableFixed(_ cents: Int, decimals: Bool) -> String {
+        decimals ? String(cents / 100) + separator + String(format: "%02d", cents % 100)
+                 : String(cents / 100)
     }
 
     /// Legge quello che una persona scrive, con la virgola o col punto: "12", "12,5", "12.50", "€ 1,234.50".
@@ -45,8 +54,10 @@ enum Money {
     }
 
     /// Filtra quello che si digita in un campo importo: cifre e un solo separatore (mostrato come
-    /// punto, qualunque sia la tastiera), al massimo due decimali. Niente decimali per yen & co.
+    /// quello della lingua in uso, qualunque sia la tastiera), al massimo due decimali.
+    /// Niente decimali per yen & co.
     static func sanitizeInput(_ text: String, decimals allowDecimals: Bool = true) -> String {
+        let separator = Self.separator
         var out = ""
         var seenSeparator = false
         var decimals = 0
@@ -60,7 +71,7 @@ enum Money {
                 out.append(ch)
             } else if allowDecimals, ch == "," || ch == ".", !seenSeparator {
                 seenSeparator = true
-                out.append(out.isEmpty ? "0." : ".")
+                out += out.isEmpty ? "0" + separator : separator
             }
         }
         return out
@@ -68,15 +79,18 @@ enum Money {
 }
 
 enum DateText {
-    private static let formatter: DateFormatter = {
-        let f = DateFormatter()
-        f.locale = Locale(identifier: "en_US_POSIX")
-        f.dateFormat = "d MMM yyyy"
-        return f
-    }()
+    private static var cached: (locale: String, formatter: DateFormatter)?
 
-    /// "24 Sep 2026"
+    /// "24 Sep 2026", "24 set 2026", "2026年9月24日": giorno, mese e anno come si scrivono
+    /// nella lingua dell'app.
     static func short(_ date: Date) -> String {
-        formatter.string(from: date)
+        let locale = I18n.shared.locale
+        if cached?.locale != locale.identifier {
+            let f = DateFormatter()
+            f.locale = locale
+            f.setLocalizedDateFormatFromTemplate("d MMM y")
+            cached = (locale.identifier, f)
+        }
+        return cached!.formatter.string(from: date)
     }
 }

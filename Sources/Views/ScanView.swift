@@ -34,11 +34,11 @@ struct ScanView: View {
             BackButton()
                 .padding(.top, 3.5)
 
-            TightTitle(text: "Scan the\nreceipt", style: .scanTitle, alignment: .center)
+            TightTitle(text: t("scan.title"), style: .scanTitle, alignment: .center)
                 .multilineTextAlignment(.center)
                 .padding(.top, 16.5)
 
-            Text("Frame the receipt: we'll pick out\nthe items and prices.")
+            Text(t("scan.subtitle"))
                 .textStyle(.lead16)
                 .foregroundStyle(Palette.inkSoft)
                 .multilineTextAlignment(.center)
@@ -56,14 +56,14 @@ struct ScanView: View {
             Group {
                 if hasCamera || isReading {
                     Button { Task { await shoot() } } label: {
-                        Label { Text(isReading ? "Reading…" : "Capture receipt") } icon: {
+                        Label { Text(isReading ? t("scan.reading") : t("scan.capture")) } icon: {
                             Image(systemName: "camera").font(.system(size: 19, weight: .medium))
                         }
                         .labelStyle(SpacedLabelStyle())
                     }
                 } else {
                     Button { showingPicker = true } label: {
-                        Label { Text("Choose a photo") } icon: {
+                        Label { Text(t("scan.choosePhoto")) } icon: {
                             Image(systemName: "photo").font(.system(size: 18, weight: .medium))
                         }
                         .labelStyle(SpacedLabelStyle())
@@ -74,7 +74,7 @@ struct ScanView: View {
             .disabled(isReading || camera.status == .starting)
             .padding(.horizontal, 24)
 
-            Button("Continue manually") {
+            Button(t("scan.continueManually")) {
                 app.typeItemsInstead()
             }
             .textStyle(.link)
@@ -98,11 +98,11 @@ struct ScanView: View {
         }
         .task { await camera.start() }
         .onDisappear { camera.stop() }
-        .alert("Couldn't read the receipt", isPresented: $failed) {
-            Button("Try again", role: .cancel) {}
-            Button("Enter items manually") { app.typeItemsInstead() }
+        .alert(t("scan.failed.title"), isPresented: $failed) {
+            Button(t("scan.failed.retry"), role: .cancel) {}
+            Button(t("scan.failed.manual")) { app.typeItemsInstead() }
         } message: {
-            Text("Try again with more light, holding the receipt flat and fully in frame.")
+            Text(t("scan.failed.message"))
         }
     }
 
@@ -111,7 +111,7 @@ struct ScanView: View {
     private var previewCard: some View {
         VStack(spacing: 0) {
             HStack {
-                Text("Preview")
+                Text(t("scan.preview"))
                     .textStyle(TextStyle(face: .semibold, size: 16))
                     .foregroundStyle(Palette.ink)
                 Spacer()
@@ -136,12 +136,12 @@ struct ScanView: View {
     }
 
     private var badge: String {
-        if isReading { return "Reading…" }
+        if isReading { return t("scan.reading") }
         switch camera.status {
-        case .starting: return "Starting…"
-        case .ready: return "Ready"
-        case .unavailable: return "Photo"
-        case .denied: return "Photo"
+        case .starting: return t("scan.status.starting")
+        case .ready: return t("scan.status.ready")
+        case .unavailable: return t("scan.status.photo")
+        case .denied: return t("scan.status.photo")
         }
     }
 
@@ -176,7 +176,7 @@ struct ScanView: View {
             if camera.status == .denied && !isReading {
                 VStack {
                     Spacer()
-                    Button("Allow camera access") {
+                    Button(t("scan.allowCamera")) {
                         if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }
                     }
                     .textStyle(TextStyle(face: .semibold, size: 13.5))
@@ -200,7 +200,7 @@ struct ScanView: View {
                                 .frame(width: 38, height: 38)
                                 .background(Circle().fill(.black.opacity(0.35)))
                         }
-                        .accessibilityLabel("Choose a photo")
+                        .accessibilityLabel(t("scan.choosePhoto"))
                         .padding(14)
                     }
                 }

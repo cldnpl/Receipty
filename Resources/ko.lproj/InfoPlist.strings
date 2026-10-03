@@ -1,0 +1,3 @@
+/* Receipty — ko. Testi di Info.plist. */
+
+"NSCameraUsageDescription" = "Receipty는 영수증의 항목과 금액을 읽기 위해 카메라를 사용합니다. 사진은 기기 밖으로 나가지 않습니다.";

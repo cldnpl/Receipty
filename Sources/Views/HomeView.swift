@@ -15,12 +15,12 @@ struct HomeView: View {
                     CircleIconButton(systemName: "plus") { app.showingNewBill = true }
                         .coachTarget(.plusButton)
                         .padding(.top, 8)
-                        .accessibilityLabel("New bill")
+                        .accessibilityLabel(t("newBill.title"))
                 }
                 .padding(.leading, 6)
                 .padding(.trailing, 5)
 
-                Text("Split the bill and see right away who owes what to whom.")
+                Text(t("home.subtitle"))
                     .textStyle(.lead)
                     .foregroundStyle(Palette.inkSoft)
                     .frame(maxWidth: 290, alignment: .leading)
@@ -32,7 +32,7 @@ struct HomeView: View {
                     EmptyRecents()
                         .padding(.top, 44)
                 } else {
-                    Text("Recent bills")
+                    Text(t("home.recent"))
                         .textStyle(.section)
                         .foregroundStyle(Palette.raspberry)
                         .padding(.top, 41.5)
@@ -51,9 +51,9 @@ struct HomeView: View {
                                 }
                                 .buttonStyle(PressableStyle(scale: 0.98))
                                 .contextMenu {
-                                    Button("Delete", systemImage: "trash", role: .destructive) { delete(bill) }
+                                    Button(t("common.delete"), systemImage: "trash", role: .destructive) { delete(bill) }
                                 }
-                                .accessibilityAction(named: "Delete") { delete(bill) }
+                                .accessibilityAction(named: Text(t("common.delete"))) { delete(bill) }
                             }
                             .transition(.asymmetric(insertion: .opacity,
                                                     removal: .opacity.combined(with: .move(edge: .leading))))
@@ -109,7 +109,7 @@ private struct BillCard: View {
         .frame(height: 99)
         .card()
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(DateText.short(bill.date)), \(bill.names), \(Money.format(bill.settlement.total, bill.settlement.currency)), settled")
+        .accessibilityLabel("\(DateText.short(bill.date)), \(bill.names), \(Money.format(bill.settlement.total, bill.settlement.currency)), \(t("common.settled"))")
     }
 }
 
@@ -118,10 +118,10 @@ private struct EmptyRecents: View {
         VStack(spacing: 14) {
             IconBadge(systemName: "receipt", size: 54)
             VStack(spacing: 5) {
-                Text("No bills yet")
+                Text(t("home.empty.title"))
                     .textStyle(.cardTitle)
                     .foregroundStyle(Palette.ink)
-                Text("When the check arrives, tap +\nand let the app do the math.")
+                Text(t("home.empty.text"))
                     .textStyle(.cardSub)
                     .foregroundStyle(Palette.gray)
                     .multilineTextAlignment(.center)

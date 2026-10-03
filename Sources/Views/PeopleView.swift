@@ -13,7 +13,7 @@ struct PeopleView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            FlowHeader(title: "WHO'S AT THE TABLE?", subtitle: "Add everyone, even those who didn't pay.") {
+            FlowHeader(title: t("people.title"), subtitle: t("people.subtitle")) {
                 if draft.source == .equal { app.finish() } else { app.path.removeLast() }
             }
 
@@ -35,7 +35,7 @@ struct PeopleView: View {
                         .padding(.top, 17.5)
 
                         if !recents.isEmpty {
-                            Text("Recent")
+                            Text(t("people.recent"))
                                 .textStyle(TextStyle(face: .bold, size: 13, tracking: -0.01))
                                 .foregroundStyle(Palette.raspberry)
                                 .padding(.top, 16)
@@ -54,7 +54,7 @@ struct PeopleView: View {
                                             .overlay(DashedCapsule())
                                     }
                                     .buttonStyle(PressableStyle(scale: 0.94))
-                                    .accessibilityLabel("Add \(recent)")
+                                    .accessibilityLabel(t("people.addRecent", recent))
                                 }
                             }
                             .padding(.top, 9.5)
@@ -79,7 +79,7 @@ struct PeopleView: View {
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
             BottomBar {
-                Button(draft.source.isItemized ? "Assign items" : "Who paid?") {
+                Button(t(draft.source.isItemized ? "people.assignItems" : "people.whoPaid")) {
                     typing = false
                     app.path.append(draft.source.isItemized ? .assign : .payments)
                 }
@@ -99,15 +99,15 @@ struct PeopleView: View {
 
     private var caption: String {
         switch draft.people.count {
-        case 0: return "Who was at dinner?"
-        case 1: return "Add at least one more person"
-        case let n: return "\(n) people at the table"
+        case 0: return t("people.caption.none")
+        case 1: return t("people.caption.one")
+        case let n: return t("people.caption.many", n)
         }
     }
 
     private var nameField: some View {
         HStack(spacing: 8) {
-            TextField(text: $name, prompt: Text("Name").foregroundStyle(Palette.placeholder)) { Text("Name") }
+            TextField(text: $name, prompt: Text(t("people.name")).foregroundStyle(Palette.placeholder)) { Text(t("people.name")) }
                 .textStyle(TextStyle(face: .regular, size: 17))
                 .foregroundStyle(Palette.ink)
                 .textInputAutocapitalization(.words)
@@ -123,7 +123,7 @@ struct PeopleView: View {
                     if hadName { DispatchQueue.main.async { typing = true } }
                 }
                 .padding(.leading, 22.5)
-            Button("Add") {
+            Button(t("common.add")) {
                 if name.trimmingCharacters(in: .whitespaces).isEmpty {
                     Haptics.select()
                 } else {
@@ -169,7 +169,7 @@ private struct PersonRow: View {
                     .frame(width: 44, height: 44)
                     .contentShape(Rectangle())
             }
-            .accessibilityLabel("Remove \(person.name)")
+            .accessibilityLabel(t("people.remove", person.name))
         }
         .padding(.leading, 12)
         .padding(.trailing, 8)

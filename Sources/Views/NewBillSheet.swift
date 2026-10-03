@@ -15,7 +15,7 @@ struct NewBillSheet: View {
                     .frame(maxWidth: .infinity)
                     .padding(.top, 14.5)
 
-                Text("New bill")
+                Text(t("newBill.title"))
                     .textStyle(.sheetTitle)
                     .foregroundStyle(Palette.ink)
                     .padding(.top, 24)
@@ -25,15 +25,15 @@ struct NewBillSheet: View {
                 VStack(spacing: 14) {
                     Button { app.startScan() } label: {
                         OptionCard(icon: "camera",
-                                   title: "Scan receipt",
-                                   subtitle: "Each pays for their own order",
+                                   title: t("newBill.scan.title"),
+                                   subtitle: t("newBill.scan.subtitle"),
                                    prominent: true)
                     }
                     .coachTarget(.scanOption)
                     Button { app.startEqualSplit() } label: {
                         OptionCard(icon: "divide",
-                                   title: "Enter manually",
-                                   subtitle: "Total split equally",
+                                   title: t("newBill.manual.title"),
+                                   subtitle: t("newBill.manual.subtitle"),
                                    prominent: false)
                     }
                     .coachTarget(.manualOption)

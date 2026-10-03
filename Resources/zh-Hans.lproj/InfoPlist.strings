@@ -1,0 +1,3 @@
+/* Receipty — zh-Hans. Testi di Info.plist. */
+
+"NSCameraUsageDescription" = "Receipty 使用相机读取收据上的品项和价格。照片不会离开你的手机。";
