@@ -63,6 +63,11 @@ enum Palette {
     static let scrim = Color(hex: 0x27020E)
     static let shadow = Color(light: 0xB0325F, dark: 0x000000)
 
+    /// La carta dello scontrino disegnato (splash): bianca, e nel tema scuro un prugna
+    /// schiarito, perché sul fondo quasi nero il foglio si legga lo stesso.
+    static let receiptPaper = Color(light: 0xFFFFFF, dark: 0x362430)
+    static let receiptEdge = Color(light: 0xFFFFFF, dark: 0x54394B)
+
     static let previewDark = Color(light: 0x2A2227, dark: 0x120C0F)
     static let bracket = Color(hex: 0xF998BB)
     static let paper = Color(hex: 0xF7F1EA)
@@ -157,6 +162,13 @@ enum Inter: String {
     case extraBold = "Inter-ExtraBold"
 }
 
+/// Fraunces (SIL OFL), istanza statica opsz 144 / wght 800 / SOFT 100 / WONK 1: le grazie
+/// morbide e la coda tonda della y stanno bene accanto allo scontrino disegnato a pennarello.
+/// Serve solo al marchio dello splash, l'interfaccia resta tutta in Inter.
+enum Display: String {
+    case bold = "FrauncesSoft-Bold"
+}
+
 struct TextStyle {
     var face: Inter
     var size: CGFloat
@@ -241,6 +253,24 @@ struct TightTitle: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(text.replacingOccurrences(of: "\n", with: " "))
         .accessibilityAddTraits(.isHeader)
+    }
+}
+
+/// Il marchio: sempre lo stesso lettering, sullo splash e in cima alla home.
+/// Fraunces lampone invece dell'Inter nero del resto dei titoli — è un nome proprio,
+/// non un titolo di schermata.
+struct Wordmark: View {
+    var size: CGFloat = 46
+    /// Sullo splash la misura è fissa (è un disegno); nella home segue il testo di sistema.
+    var scales = true
+
+    var body: some View {
+        Text("Receipty")
+            .font(scales
+                  ? .custom(Display.bold.rawValue, size: size, relativeTo: .largeTitle)
+                  : .custom(Display.bold.rawValue, fixedSize: size))
+            .tracking(size * -0.017)
+            .foregroundStyle(Palette.raspberry)
     }
 }
 

@@ -11,6 +11,12 @@ struct RootView: View {
     @State private var settingsPath: [SettingsRoute] = []
     @AppStorage("appearance") private var appearance = Appearance.system
     @AppStorage("didOnboard") private var didOnboard = false
+    // Negli screenshot (`-screen`) lo splash si salta, tranne quando è lui lo screenshot.
+    #if DEBUG
+    @State private var splashDone = DemoSeed.screen != nil && DemoSeed.screen != "splash"
+    #else
+    @State private var splashDone = false
+    #endif
 
     var body: some View {
         GeometryReader { geo in
@@ -51,6 +57,15 @@ struct RootView: View {
                     CoachOverlay(coach: coach, onNext: next, onSkip: endTutorial)
                         .zIndex(2)
                         .transition(.opacity)
+                }
+
+                if !splashDone {
+                    // Uscendo si allarga e sfuma. Resta davanti a tutto finché non se n'è
+                    // andato: l'onboarding sale di sotto nello stesso momento, così tra lo
+                    // splash e la prima schermata non si intravede la home.
+                    SplashView { withAnimation(.easeInOut(duration: 0.38)) { splashDone = true } }
+                        .zIndex(3)
+                        .transition(.scale(scale: 1.07).combined(with: .opacity))
                 }
             }
             .animation(.spring(response: 0.42, dampingFraction: 0.88), value: app.showingNewBill)
@@ -93,6 +108,7 @@ struct RootView: View {
 
     private var onboardingBinding: Binding<Bool> {
         Binding(get: {
+            guard splashDone else { return false }
             #if DEBUG
             if let screen = DemoSeed.screen { return screen == "onboarding" && !didOnboard }
             #endif

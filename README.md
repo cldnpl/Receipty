@@ -30,7 +30,10 @@ open Receipty.xcodeproj
 
 `./build.sh [simulator UDID]` generates, builds and launches the app on a simulator. Tests: `xcodebuild -scheme Receipty test -destination 'platform=iOS Simulator,name=iPhone 16'`.
 
-SwiftUI, iOS 17+. The Inter typeface is bundled under the SIL Open Font License (`Resources/Fonts/Inter-LICENSE.txt`).
+SwiftUI, iOS 17+. Two typefaces are bundled, both under the SIL Open Font License: Inter for the
+interface (`Resources/Fonts/Inter-LICENSE.txt`) and Fraunces for the wordmark on the launch screen
+(`Resources/Fonts/FrauncesSoft-LICENSE.txt`). `FrauncesSoft-Bold.ttf` is a static instance of the
+Fraunces variable font at `opsz 144, wght 800, SOFT 100, WONK 1`.
 
 ## Translations
 

@@ -7,9 +7,7 @@ struct HomeView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
                 HStack(alignment: .top) {
-                    Text("Receipty")
-                        .textStyle(.hero)
-                        .foregroundStyle(Palette.ink)
+                    Wordmark()
                         .accessibilityAddTraits(.isHeader)
                     Spacer(minLength: 12)
                     CircleIconButton(systemName: "plus") { app.showingNewBill = true }

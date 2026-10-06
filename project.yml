@@ -29,6 +29,7 @@ targets:
           - Inter-SemiBold.ttf
           - Inter-Bold.ttf
           - Inter-ExtraBold.ttf
+          - FrauncesSoft-Bold.ttf
         UILaunchScreen:
           UIColorName: LaunchBackground
         NSCameraUsageDescription: Receipty uses the camera to read the items and prices on your receipt. The photo never leaves your phone.
