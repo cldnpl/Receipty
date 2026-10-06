@@ -159,6 +159,7 @@ extension EnvironmentValues {
 struct BottomBar<Content: View>: View {
     @Environment(\.screenHeight) private var screenHeight
     @State private var frame: CGRect = .zero
+    var topPadding: CGFloat = 26
     var bottomPadding: CGFloat = 0
     @ViewBuilder var content: Content
 
@@ -167,7 +168,7 @@ struct BottomBar<Content: View>: View {
             content
         }
         .padding(.horizontal, 24)
-        .padding(.top, 26)
+        .padding(.top, topPadding)
         .padding(.bottom, bottomPadding)
         .frame(maxWidth: .infinity)
         .background {
@@ -185,24 +186,33 @@ struct BottomBar<Content: View>: View {
 }
 
 extension View {
-    /// Da iOS 26 gli ScrollView schiariscono da soli il bordo sotto le barre: qui la sfumatura
-    /// la disegna già BottomBar con i colori del gradiente, e le due insieme fanno una banda chiara.
+    /// Da iOS 26 gli ScrollView sfumano da soli il contenuto che passa sotto le barre.
+    /// Dove sotto c'è BottomBar la sfumatura è già la sua, con i colori del gradiente, e le due
+    /// insieme farebbero una banda chiara: lì si spegne tutta (`.all`, il default).
+    ///
+    /// Dove invece sotto c'è la tab bar di sistema — la home, le impostazioni, i loro elenchi —
+    /// va spenta solo in alto (`.top`): senza quella di sistema in basso il contenuto finirebbe
+    /// tagliato di netto sul bordo della barra.
     @ViewBuilder
-    func plainScrollEdges() -> some View {
+    func plainScrollEdges(_ edges: Edge.Set = .all) -> some View {
         if #available(iOS 26.0, *) {
-            scrollEdgeEffectHidden(true, for: .all)
+            scrollEdgeEffectHidden(true, for: edges)
         } else {
             self
         }
     }
 
     /// Sfuma il bordo alto di uno ScrollView sotto un'intestazione fissa.
+    ///
+    /// La maschera deve scendere fino in fondo allo schermo: se si ferma al margine sicuro
+    /// taglia di netto il contenuto che passa sotto la tab bar di vetro.
     func topFade(_ height: CGFloat = 18) -> some View {
         mask(
             VStack(spacing: 0) {
                 LinearGradient(colors: [.clear, .black], startPoint: .top, endPoint: .bottom).frame(height: height)
                 Color.black
             }
+            .ignoresSafeArea(edges: .bottom)
         )
     }
 }

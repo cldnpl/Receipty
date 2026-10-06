@@ -82,9 +82,9 @@
 "assign.caption.one" = "1 article sans personne";
 "assign.caption.many" = "Articles sans personne : %d";
 "payments.title" = "QUI A PAYÉ ?";
-"payments.instructions.itemized" = "À côté de chaque nom, indiquez ce qu'il met.";
-"payments.instructions.equal" = "Saisissez le total, puis à côté de chaque nom ce qu'il met.";
-"payments.example" = "Ex. total 50, %1$@ paie avec un billet de 50 → 50 à côté de %2$@.";
+"payments.instructions.itemized" = "Sous chaque nom, ce qu'il a commandé. Dans la case, indiquez ce qu'il met vraiment — espèces ou carte.";
+"payments.instructions.equal" = "Saisissez le total de l'addition, puis dans chaque case ce que la personne met vraiment.";
+"payments.example" = "Addition de 22 et %1$@ met un billet de 20 ? Écrivez 20 à côté de %2$@ : la monnaie, on s'en occupe.";
 "payments.example.name" = "Léa";
 "payments.calculate" = "Calculer";
 "payments.total" = "Total de l'addition";

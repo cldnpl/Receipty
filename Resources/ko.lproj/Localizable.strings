@@ -82,9 +82,9 @@
 "assign.caption.one" = "주인 없는 항목 1개";
 "assign.caption.many" = "주인 없는 항목: %d개";
 "payments.title" = "누가 냈나요?";
-"payments.instructions.itemized" = "각 이름 옆에 낸 금액을 적으세요.";
-"payments.instructions.equal" = "총액을 입력하고, 각 이름 옆에 낸 금액을 적으세요.";
-"payments.example" = "예: 합계 50, %1$@ 가 50짜리 지폐로 결제 → %2$@ 옆에 50.";
+"payments.instructions.itemized" = "이름 아래는 그 사람이 주문한 금액이에요. 칸에는 실제로 내는 금액을 적으세요 — 현금이든 카드든.";
+"payments.instructions.equal" = "계산서 총액을 입력하고, 각 칸에 그 사람이 실제로 내는 금액을 적으세요.";
+"payments.example" = "합계가 22인데 %1$@ 가 20짜리 지폐를 냈다면 %2$@ 옆에 20. 거스름돈은 저희가 계산할게요.";
 "payments.example.name" = "민수";
 "payments.calculate" = "계산하기";
 "payments.total" = "총액";

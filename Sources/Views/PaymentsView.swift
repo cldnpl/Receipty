@@ -47,29 +47,17 @@ struct PaymentsView: View {
             .padding(.top, 4)
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
-            // Mentre si scrive la barra sparisce (il resoconto va sopra la tastiera): altrimenti
-            // tra tastiera, pill e bottone resta visibile una riga sola.
+            // Mentre si scrive la barra grande lascia il posto a una fascia bassa: tra tastiera,
+            // pill e bottone intero resterebbe visibile una riga sola.
             if focus == nil {
                 bottomBar.transition(.opacity)
+            } else {
+                typingBar.transition(.opacity)
             }
         }
         .animation(.easeOut(duration: 0.2), value: focus == nil)
         .background(BackdropView())
         .toolbar(.hidden, for: .navigationBar)
-        .toolbar {
-            ToolbarItemGroup(placement: .keyboard) {
-                Text(status.text)
-                    .font(.custom(Inter.semibold.rawValue, size: 14.5))
-                    .foregroundStyle(status.ok ? Palette.successText : Palette.raspberry)
-                    .contentTransition(.numericText())
-                    .animation(.snappy, value: status.text)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.8)
-                Spacer()
-                Button(t("common.done")) { focus = nil }
-                    .font(.custom(Inter.semibold.rawValue, size: 16))
-            }
-        }
         .onAppear {
             if !draft.source.isItemized && draft.total == 0 { focus = .total }
         }
@@ -77,6 +65,28 @@ struct PaymentsView: View {
             // "52" diventa "52.00" quando si esce dal campo del totale.
             if old == .total, let cents = Money.parse(draft.equalTotalText), cents > 0 {
                 draft.equalTotalText = Money.editableFixed(cents, decimals: currency.minorDigits > 0)
+            }
+        }
+    }
+
+    /// Sopra la tastiera: a sinistra come sta andando il conto, a destra il tasto per chiudere.
+    /// Non è la barra di sistema (`ToolbarItemGroup(placement: .keyboard)`) perché da iOS 26
+    /// quella appoggia i suoi tasti sul bordo dello schermo e su quello della tastiera, senza
+    /// un margine; questa ha i margini dell'app e lo stesso sfondo sfumato dell'altra fascia.
+    private var typingBar: some View {
+        BottomBar(topPadding: 12, bottomPadding: 10) {
+            HStack(spacing: 12) {
+                StatusPill(text: status.text, positive: status.ok)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+                Spacer(minLength: 0)
+                Button(t("common.done")) { focus = nil }
+                    .textStyle(TextStyle(face: .semibold, size: 15.5))
+                    .foregroundStyle(Palette.inverseText)
+                    .padding(.horizontal, 20)
+                    .frame(height: 37)
+                    .background(Capsule().fill(Palette.inverseFill))
+                    .buttonStyle(PressableStyle(scale: 0.94))
             }
         }
     }

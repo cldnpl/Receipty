@@ -82,9 +82,9 @@
 "assign.caption.one" = "1 个品项还没人";
 "assign.caption.many" = "还没人的品项：%d 个";
 "payments.title" = "谁付了钱？";
-"payments.instructions.itemized" = "在每个名字旁边写下他出了多少。";
-"payments.instructions.equal" = "先输入合计，再在每个名字旁边写下他出了多少。";
-"payments.example" = "例如：合计 50，%1$@ 用 50 的钞票付 → 在 %2$@ 旁边填 50。";
+"payments.instructions.itemized" = "名字下面是他点的金额。方框里填他实际拿出多少——现金或刷卡都算。";
+"payments.instructions.equal" = "先输入账单合计，再在每个方框里填那个人实际拿出多少。";
+"payments.example" = "合计 22，%1$@ 拿出一张 20 的钞票？在 %2$@ 旁边填 20，找零我们来算。";
 "payments.example.name" = "小明";
 "payments.calculate" = "计算";
 "payments.total" = "账单合计";

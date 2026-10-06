@@ -65,7 +65,7 @@ struct HomeView: View {
             .padding(.bottom, 24)
         }
         .scrollIndicators(.hidden)
-        .plainScrollEdges()
+        .plainScrollEdges(.top)
         .topFade(10)
         .background(BackdropView())
         .toolbar(.hidden, for: .navigationBar)

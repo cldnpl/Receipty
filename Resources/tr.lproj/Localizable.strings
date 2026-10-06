@@ -82,9 +82,9 @@
 "assign.caption.one" = "1 kalem boşta";
 "assign.caption.many" = "Boşta kalan kalem: %d";
 "payments.title" = "KİM ÖDEDİ?";
-"payments.instructions.itemized" = "Her ismin yanına ne kadar koyduğunu yaz.";
-"payments.instructions.equal" = "Toplamı gir, sonra her ismin yanına ne kadar koyduğunu yaz.";
-"payments.example" = "Örn. toplam 50, %1$@ 50'lik banknotla ödüyor → %2$@ yanına 50.";
+"payments.instructions.itemized" = "Her ismin altında siparişi yazıyor. Kutuya gerçekte ne koyduğunu yaz — nakit ya da kart.";
+"payments.instructions.equal" = "Hesabın toplamını gir, sonra her kutuya o kişinin gerçekte ne koyduğunu yaz.";
+"payments.example" = "Hesap 22 ve %1$@ 20'lik banknot koydu mu? %2$@ yanına 20 yaz: para üstünü biz hesaplarız.";
 "payments.example.name" = "Ayşe";
 "payments.calculate" = "Hesapla";
 "payments.total" = "Hesap toplamı";

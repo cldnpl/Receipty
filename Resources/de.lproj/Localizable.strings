@@ -82,9 +82,9 @@
 "assign.caption.one" = "1 Position ohne Namen";
 "assign.caption.many" = "Positionen ohne Namen: %d";
 "payments.title" = "WER HAT BEZAHLT?";
-"payments.instructions.itemized" = "Schreib neben jeden Namen, wie viel er dazulegt.";
-"payments.instructions.equal" = "Gib die Summe ein und dann neben jeden Namen, wie viel er dazulegt.";
-"payments.example" = "z. B. Summe 50, %1$@ zahlt mit einem 50er → 50 neben %2$@.";
+"payments.instructions.itemized" = "Unter jedem Namen steht, was er bestellt hat. Ins Feld schreibst du, was er wirklich hinlegt — bar oder mit Karte.";
+"payments.instructions.equal" = "Gib die Summe der Rechnung ein und dann in jedes Feld, was die Person wirklich hinlegt.";
+"payments.example" = "Rechnung über 22 und %1$@ legt einen 20er hin? Schreib 20 neben %2$@ — das Wechselgeld rechnen wir aus.";
 "payments.example.name" = "Anna";
 "payments.calculate" = "Berechnen";
 "payments.total" = "Rechnungssumme";

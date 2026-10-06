@@ -82,9 +82,9 @@
 "assign.caption.one" = "1 item sem ninguém";
 "assign.caption.many" = "Itens sem ninguém: %d";
 "payments.title" = "QUEM PAGOU?";
-"payments.instructions.itemized" = "Ao lado de cada nome, escreva quanto a pessoa põe.";
-"payments.instructions.equal" = "Informe o total e, ao lado de cada nome, quanto a pessoa põe.";
-"payments.example" = "Ex.: total 50, %1$@ paga com uma nota de 50 → 50 ao lado de %2$@.";
+"payments.instructions.itemized" = "Abaixo de cada nome está o que a pessoa pediu. Na caixa, escreva quanto ela realmente põe — dinheiro ou cartão.";
+"payments.instructions.equal" = "Informe o total da conta e, em cada caixa, quanto a pessoa realmente põe.";
+"payments.example" = "Conta de 22 e %1$@ põe uma nota de 20? Escreva 20 ao lado de %2$@: o troco a gente calcula.";
 "payments.example.name" = "Ana";
 "payments.calculate" = "Calcular";
 "payments.total" = "Total da conta";

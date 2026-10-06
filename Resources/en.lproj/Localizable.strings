@@ -82,9 +82,9 @@
 "assign.caption.one" = "1 item with nobody on it";
 "assign.caption.many" = "Items with nobody on them: %d";
 "payments.title" = "WHO PAID?";
-"payments.instructions.itemized" = "Next to each name, write what they're putting in.";
-"payments.instructions.equal" = "Enter the total, then next to each name what they're putting in.";
-"payments.example" = "E.g. total 50, %1$@ pays with a 50 note → 50 next to %2$@.";
+"payments.instructions.itemized" = "Under each name is what they ordered. In the box, write what they actually put down — cash or card.";
+"payments.instructions.equal" = "Enter the bill total, then in each box what that person actually puts down.";
+"payments.example" = "Bill of 22 and %1$@ puts down a 20 note? Write 20 next to %2$@: the change is worked out for you.";
 "payments.example.name" = "Anna";
 "payments.calculate" = "Calculate";
 "payments.total" = "Bill total";

@@ -82,9 +82,9 @@
 "assign.caption.one" = "1 item zonder naam";
 "assign.caption.many" = "Items zonder naam: %d";
 "payments.title" = "WIE HEEFT BETAALD?";
-"payments.instructions.itemized" = "Zet achter elke naam hoeveel die inlegt.";
-"payments.instructions.equal" = "Vul het totaal in en zet achter elke naam hoeveel die inlegt.";
-"payments.example" = "Bijv. totaal 50, %1$@ betaalt met een biljet van 50 → 50 naast %2$@.";
+"payments.instructions.itemized" = "Onder elke naam staat wat diegene besteld heeft. In het vakje zet je wat diegene echt neerlegt — contant of met kaart.";
+"payments.instructions.equal" = "Vul het totaal van de rekening in en zet in elk vakje wat diegene echt neerlegt.";
+"payments.example" = "Rekening van 22 en %1$@ legt een briefje van 20 neer? Zet 20 naast %2$@: het wisselgeld rekenen wij uit.";
 "payments.example.name" = "Anna";
 "payments.calculate" = "Bereken";
 "payments.total" = "Totaal rekening";

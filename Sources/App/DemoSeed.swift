@@ -92,10 +92,17 @@ enum DemoSeed {
             d.paidText[d.people[1].id] = "10"
             app.draft = d
             app.path = [.scan, .review, .people, .assign, .payments]
+        case "keyboard":
+            let d = BillDraft(source: .equal, currency: Currency(code: "EUR"))
+            ["Elbek", "Claudia"].forEach { d.addPerson(named: $0) }
+            app.draft = d
+            app.path = [.people, .payments]
         case "manual":
             let d = BillDraft(source: .equal, currency: Currency(code: "EUR"))
             names.forEach { d.addPerson(named: $0) }
-            d.equalTotalText = "70.00"
+            // Scritto col separatore della lingua, come lo lascerebbe chi digita: il campo
+            // normalizza quello che si scrive, ma qui il testo arriva già pronto.
+            d.equalTotalText = Money.editableFixed(7000, decimals: true)
             d.paidText[d.people[0].id] = "70"
             app.draft = d
             app.path = [.people, .payments]

@@ -82,9 +82,9 @@
 "assign.caption.one" = "1 voce senza nessuno";
 "assign.caption.many" = "Voci senza nessuno: %d";
 "payments.title" = "CHI HA PAGATO?";
-"payments.instructions.itemized" = "Accanto a ogni nome scrivi quanto mette.";
-"payments.instructions.equal" = "Inserisci il totale, poi accanto a ogni nome quanto mette.";
-"payments.example" = "Es. totale 50, %1$@ paga con un biglietto da 50 → 50 accanto a %2$@.";
+"payments.instructions.itemized" = "Sotto ogni nome c'è quanto ha preso. Nella casella scrivi quanto mette davvero — contanti o carta.";
+"payments.instructions.equal" = "Inserisci il totale del conto, poi in ogni casella quanto mette davvero quella persona.";
+"payments.example" = "Conto da 22 e %1$@ mette un biglietto da 20? Scrivi 20 accanto a %2$@: il resto lo calcoliamo noi.";
 "payments.example.name" = "Anna";
 "payments.calculate" = "Calcola";
 "payments.total" = "Totale del conto";

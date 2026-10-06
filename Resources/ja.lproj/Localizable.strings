@@ -82,9 +82,9 @@
 "assign.caption.one" = "担当のない品目が1件";
 "assign.caption.many" = "担当のない品目: %d件";
 "payments.title" = "だれが払った？";
-"payments.instructions.itemized" = "それぞれの名前の横に、出す金額を書きます。";
-"payments.instructions.equal" = "合計を入力して、それぞれの名前の横に出す金額を書きます。";
-"payments.example" = "例: 合計50、%1$@ が50の紙幣で払う → %2$@ の横に50。";
+"payments.instructions.itemized" = "名前の下はその人の注文分です。枠には、実際に出す金額を書きます（現金でもカードでも）。";
+"payments.instructions.equal" = "会計の合計を入力して、それぞれの枠にその人が実際に出す金額を書きます。";
+"payments.example" = "合計22で %1$@ が20の紙幣を出すなら、%2$@ の横に20。おつりはこちらで計算します。";
 "payments.example.name" = "ユキ";
 "payments.calculate" = "計算する";
 "payments.total" = "会計の合計";

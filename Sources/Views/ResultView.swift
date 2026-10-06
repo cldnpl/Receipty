@@ -4,20 +4,18 @@ import SwiftUI
 struct DraftResultView: View {
     @Environment(AppModel.self) private var app
     let draft: BillDraft
-    @State private var settlement: Settlement?
+    private let settlement: Settlement
+
+    /// Il conto si fa qui e non in `onAppear`: lì la schermata nascerebbe vuota e il tasto
+    /// indietro comparirebbe un istante dopo, a transizione già finita, come se cadesse dall'alto.
+    init(draft: BillDraft) {
+        self.draft = draft
+        self.settlement = draft.settlement()
+    }
 
     var body: some View {
-        Group {
-            if let settlement {
-                ResultView(settlement: settlement, date: draft.createdAt) { app.finish() }
-            } else {
-                BackdropView()
-            }
-        }
-        .onAppear {
-            settlement = draft.settlement()
-            app.record(draft)
-        }
+        ResultView(settlement: settlement, date: draft.createdAt) { app.finish() }
+            .onAppear { app.record(draft) }
     }
 }
 
@@ -396,7 +394,7 @@ private struct BreakdownSheet: View {
                 .padding(.vertical, 18)
             }
             .scrollIndicators(.hidden)
-            .plainScrollEdges()
+            .plainScrollEdges(.top)
         }
         .padding(.horizontal, 22)
         .presentationDetents([.medium, .large])

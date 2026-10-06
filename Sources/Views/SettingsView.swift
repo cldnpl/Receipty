@@ -112,7 +112,7 @@ struct SettingsView: View {
             .padding(.bottom, 30)
         }
         .scrollIndicators(.hidden)
-        .plainScrollEdges()
+        .plainScrollEdges(.top)
         .topFade(10)
         .background(BackdropView())
         .toolbar(.hidden, for: .navigationBar)
@@ -336,7 +336,7 @@ struct CurrencyPickerView: View {
                 .padding(.bottom, 30)
             }
             .scrollIndicators(.hidden)
-            .plainScrollEdges()
+            .plainScrollEdges(.top)
             .scrollDismissesKeyboard(.interactively)
             .topFade(14)
         }
@@ -449,7 +449,7 @@ struct LanguagePickerView: View {
                 .padding(.bottom, 30)
             }
             .scrollIndicators(.hidden)
-            .plainScrollEdges()
+            .plainScrollEdges(.top)
             .topFade(14)
         }
         .background(BackdropView())
