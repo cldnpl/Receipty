@@ -17,6 +17,25 @@ solo in inglese: aggiungere le localizzazioni della scheda è un lavoro a parte,
 | Privacy Policy URL | https://github.com/cldnpl/Receipty/blob/main/PRIVACY_POLICY.md |
 | License agreement | Apple's Standard EULA (il nostro `EULA.md` la richiama) |
 
+## Version 1.2
+
+Description, keywords, URL e il resto della scheda restano quelli della 1.1 qui sotto.
+
+### What's New in This Version (max 4000, 586)
+
+```
+A livelier start and a clearer "Who paid?".
+
+• New launch animation: the receipt from the icon writes itself out. Tap to skip it. With Reduce Motion on, it simply appears.
+• "Who paid?" explains itself better: under each name you see what they ordered, and in the box you write what they actually put down, cash or card. Receipty works out the change.
+• While you type, a slim bar above the keyboard shows how the bill is adding up, with a Done button right there.
+• Small fixes: lists no longer get cut off under the tab bar, and the results screen opens ready, without a blank moment.
+```
+
+### Promotional text (max 170, 157)
+
+Uguale alla 1.1.
+
 ## Version 1.1
 
 La 1.0 è già approvata: il suo treno è chiuso e App Store Connect rifiuta altre build con quel
