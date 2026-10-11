@@ -7,3 +7,10 @@ local.properties
 captures/
 .externalNativeBuild/
 .cxx/
+
+# Firma per Google Play: la chiave e il pacchetto firmato non vanno nella repo.
+*.jks
+*.keystore
+keystore.properties
+app/release/
+release/
