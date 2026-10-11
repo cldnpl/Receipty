@@ -1,0 +1,6 @@
+/* Receipty — en. Solo Android: dove iOS dice "iPhone". Si sovrappone a ../en.strings. */
+
+"onboarding.footer" = "No account needed · Your bills stay on this phone";
+"coach.3.message" = "Type the total and who paid. It's split equally, change included. Your bills stay on this phone.";
+"settings.footer" = "No account, no ads, no tracking.\nYour bills stay on this phone.";
+"language.system" = "Phone language";

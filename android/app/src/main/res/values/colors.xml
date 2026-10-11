@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- LaunchBackground di iOS: il primo colore del gradiente. -->
+    <color name="launch_background">#FEF6F9</color>
+    <color name="icon_background">#FEB2CE</color>
+</resources>

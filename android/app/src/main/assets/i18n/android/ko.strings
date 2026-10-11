@@ -1,0 +1,6 @@
+/* Receipty — ko. Solo Android: dove iOS dice "iPhone". */
+
+"onboarding.footer" = "계정 불필요 · 계산서는 이 휴대폰에만 저장";
+"coach.3.message" = "총액과 누가 냈는지 입력하세요. 거스름돈까지 균등하게 나눕니다. 계산서는 이 휴대폰에만 저장돼요.";
+"settings.footer" = "계정 없음, 광고 없음, 추적 없음.\n계산서는 이 휴대폰에만 저장됩니다.";
+"language.system" = "휴대폰 언어";
