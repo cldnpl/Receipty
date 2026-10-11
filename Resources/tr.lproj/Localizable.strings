@@ -172,3 +172,10 @@
 "currency.all" = "Tüm para birimleri";
 "summary.header" = "Receipty · %@";
 "settings.title" = "Ayarlar";
+"payments.discount.add" = "İndirim ekle";
+"payments.discount" = "İndirim";
+"payments.discount.percent" = "Yüzde";
+"payments.discount.remove" = "İndirimi kaldır";
+"payments.discount.summary" = "−%1$@ · ödenecek %2$@";
+"result.discount" = "%@ indirim dahil";
+"summary.discount" = "İndirim: %@";

@@ -19,6 +19,11 @@ final class BillDraft {
     /// Solo per la divisione in parti uguali.
     var equalTotalText = ""
 
+    /// Lo sconto sul totale, se c'è: si aggiunge in "Chi ha pagato?".
+    var hasDiscount = false
+    var discountMode = DiscountMode.percent
+    var discountText = ""
+
     init(source: BillSource, currency: Currency = .current) {
         self.source = source
         self.currency = currency
@@ -28,9 +33,24 @@ final class BillDraft {
 
     var itemsTotal: Int { items.reduce(0) { $0 + $1.cents } }
 
-    var total: Int {
+    /// Il totale prima dello sconto: le voci, o quello scritto a mano.
+    var subtotal: Int {
         source.isItemized ? itemsTotal : max(0, Money.parse(equalTotalText) ?? 0)
     }
+
+    /// Lo sconto in centesimi: arrotondato al passo della valuta, mai più del totale.
+    var discount: Int {
+        guard hasDiscount, let value = Money.parse(discountText), value > 0 else { return 0 }
+        // "10" in percentuale arriva come 1000: centesimi di punto, 10000 = 100%.
+        let raw = discountMode == .percent
+            ? Double(subtotal) * Double(min(value, 10_000)) / 10_000
+            : Double(value)
+        let unit = currency.unit
+        return min(subtotal, Int((raw / Double(unit)).rounded()) * unit)
+    }
+
+    /// Quello che il tavolo paga davvero: il totale meno lo sconto.
+    var total: Int { subtotal - discount }
 
     var itemsToCheck: Int { items.filter { $0.issue != nil }.count }
     var unassignedCount: Int { items.filter { item in !people.contains { item.assignees.contains($0.id) } }.count }
@@ -44,7 +64,8 @@ final class BillDraft {
     var owed: [UUID: Int] {
         let ids = people.map(\.id)
         if source.isItemized {
-            return SettlementEngine.itemizedShares(items: items, people: ids, unit: currency.unit)
+            let shares = SettlementEngine.itemizedShares(items: items, people: ids, unit: currency.unit)
+            return SettlementEngine.applyDiscount(shares, order: ids, subtotal: subtotal, discount: discount, unit: currency.unit)
         }
         let paid = Dictionary(uniqueKeysWithValues: people.map { ($0.id, self.paid($0)) })
         return SettlementEngine.equalShares(total: total, people: ids, paid: paid, unit: currency.unit)
@@ -58,6 +79,7 @@ final class BillDraft {
         let paid = Dictionary(uniqueKeysWithValues: people.map { ($0.id, self.paid($0)) })
         var result = SettlementEngine.settle(people: people, owed: owed, paid: paid, total: total)
         result.currency = currency
+        result.discount = discount
         return result
     }
 

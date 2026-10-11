@@ -10,6 +10,7 @@ struct PaymentsView: View {
 
     enum Focus: Hashable {
         case total
+        case discount
         case person(UUID)
     }
 
@@ -59,7 +60,7 @@ struct PaymentsView: View {
         .background(BackdropView())
         .toolbar(.hidden, for: .navigationBar)
         .onAppear {
-            if !draft.source.isItemized && draft.total == 0 { focus = .total }
+            if !draft.source.isItemized && draft.subtotal == 0 { focus = .total }
         }
         .onChange(of: focus) { old, _ in
             // "52" diventa "52.00" quando si esce dal campo del totale.
@@ -137,15 +138,31 @@ struct PaymentsView: View {
         return (t("payments.status.change", Money.format(change, currency)), true)
     }
 
-    @ViewBuilder
     private var totalCard: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            totalSection
+                .contentShape(Rectangle())
+                .onTapGesture { if !draft.source.isItemized { focus = .total } }
+            discountSection
+        }
+        .padding(.horizontal, 21)
+        .padding(.top, 19.5)
+        .padding(.bottom, 19.5)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .card()
+        .animation(.snappy, value: draft.hasDiscount)
+        .animation(.snappy, value: draft.discount)
+    }
+
+    @ViewBuilder
+    private var totalSection: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text(t("payments.total"))
                 .textStyle(TextStyle(face: .medium, size: 14))
                 .foregroundStyle(Palette.raspberry)
 
             if draft.source.isItemized {
-                Text(Money.format(draft.total, currency))
+                Text(Money.format(draft.subtotal, currency))
                     .textStyle(.bigAmount)
                     .foregroundStyle(Palette.ink)
                     .padding(.top, 5)
@@ -182,13 +199,67 @@ struct PaymentsView: View {
                     .padding(.top, 4)
             }
         }
-        .padding(.horizontal, 21)
-        .padding(.top, 19.5)
-        .padding(.bottom, 19.5)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .card()
-        .contentShape(Rectangle())
-        .onTapGesture { if !draft.source.isItemized { focus = .total } }
+    }
+
+    /// "Aggiungi uno sconto", poi: percentuale o importo, quanto, e quanto si paga davvero.
+    @ViewBuilder
+    private var discountSection: some View {
+        if draft.hasDiscount {
+            VStack(alignment: .leading, spacing: 0) {
+                Rectangle()
+                    .fill(Palette.hairline)
+                    .frame(height: 1)
+                    .padding(.top, 16)
+                HStack {
+                    Text(t("payments.discount"))
+                        .textStyle(TextStyle(face: .semibold, size: 15))
+                        .foregroundStyle(Palette.ink)
+                    Spacer()
+                    Button {
+                        focus = nil
+                        draft.hasDiscount = false
+                        draft.discountText = ""
+                    } label: {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundStyle(Palette.muted)
+                            .frame(width: 32, height: 32)
+                            .contentShape(Rectangle())
+                    }
+                    .accessibilityLabel(t("payments.discount.remove"))
+                }
+                .padding(.top, 10)
+                HStack(spacing: 10) {
+                    DiscountModePicker(mode: $draft.discountMode)
+                    DiscountField(text: $draft.discountText, mode: draft.discountMode, focus: $focus)
+                }
+                .padding(.top, 6)
+                if draft.discount > 0 {
+                    Text(t("payments.discount.summary", Money.format(draft.discount, currency), Money.format(draft.total, currency)))
+                        .textStyle(TextStyle(face: .semibold, size: 13.5))
+                        .foregroundStyle(Palette.raspberry)
+                        .contentTransition(.numericText())
+                        .padding(.top, 9)
+                }
+            }
+            .transition(.opacity)
+        } else {
+            Button {
+                draft.hasDiscount = true
+                focus = .discount
+            } label: {
+                HStack(spacing: 6) {
+                    Image(systemName: "tag").font(.system(size: 13, weight: .semibold))
+                    Text(t("payments.discount.add"))
+                }
+                .textStyle(.smallLink)
+                .foregroundStyle(Palette.pinkText)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(PressableStyle(scale: 0.96))
+            .padding(.top, 14)
+        }
     }
 
     private var splitLine: String {
@@ -240,5 +311,89 @@ private struct PayerRow: View {
         .padding(.trailing, 8)
         .frame(height: consumed == nil ? 62 : 64)
         .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Palette.cardSoft))
+    }
+}
+
+/// Percentuale o importo: due pillole, come le chip dell'app.
+private struct DiscountModePicker: View {
+    @Environment(\.currency) private var currency
+    @Binding var mode: DiscountMode
+
+    var body: some View {
+        HStack(spacing: 2) {
+            segment(.percent, "%", label: t("payments.discount.percent"))
+            segment(.amount, currency.symbol, label: t("common.amount"))
+        }
+        .padding(3)
+        .background(Capsule().fill(Palette.pinkMist))
+    }
+
+    private func segment(_ value: DiscountMode, _ text: String, label: String) -> some View {
+        let on = mode == value
+        return Button {
+            Haptics.select()
+            withAnimation(.snappy) { mode = value }
+        } label: {
+            Text(text)
+                .font(.custom(Inter.bold.rawValue, size: 15))
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
+                .foregroundStyle(on ? Color.white : Palette.raspberry)
+                .frame(width: 44, height: 34)
+                .background(Capsule().fill(on ? Palette.pink : Color.clear))
+                .contentShape(Capsule())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(label)
+        .accessibilityAddTraits(on ? .isSelected : [])
+    }
+}
+
+/// Quanto è lo sconto: "10 %" oppure "€ 5".
+private struct DiscountField: View {
+    @Environment(\.currency) private var currency
+    @Binding var text: String
+    let mode: DiscountMode
+    var focus: FocusState<PaymentsView.Focus?>.Binding
+
+    var body: some View {
+        HStack(spacing: 4) {
+            if mode == .amount { unit(currency.symbol) }
+            TextField(text: $text, prompt: Text("0").foregroundStyle(Palette.fieldPlaceholder)) {
+                Text(t("payments.discount"))
+            }
+            .textStyle(.fieldValue)
+            .foregroundStyle(Palette.ink)
+            .multilineTextAlignment(.trailing)
+            .keyboardType(.decimalPad)
+            .focused(focus, equals: .discount)
+            .onChange(of: text) { _, new in
+                let clean = sanitize(new)
+                if clean != new { text = clean }
+            }
+            if mode == .percent { unit("%") }
+        }
+        .padding(.horizontal, 14)
+        .frame(maxWidth: .infinity)
+        .frame(height: 40)
+        .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(Palette.fieldFill))
+        .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).stroke(Palette.fieldBorder, lineWidth: 1.5))
+        .contentShape(Rectangle())
+        .onTapGesture { focus.wrappedValue = .discount }
+    }
+
+    private func unit(_ symbol: String) -> some View {
+        Text(symbol)
+            .font(.custom(Inter.semibold.rawValue, size: 17))
+            .lineLimit(1)
+            .fixedSize()
+            .foregroundStyle(Palette.raspberry)
+    }
+
+    /// In percentuale si arriva al massimo a 100.
+    private func sanitize(_ new: String) -> String {
+        let clean = Money.sanitizeInput(new, decimals: mode == .percent || currency.minorDigits > 0)
+        if mode == .percent, let value = Money.parse(clean), value > 10_000 { return "100" }
+        return clean
     }
 }

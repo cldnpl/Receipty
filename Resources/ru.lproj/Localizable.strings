@@ -172,3 +172,10 @@
 "currency.all" = "Все валюты";
 "summary.header" = "Receipty · %@";
 "settings.title" = "Настройки";
+"payments.discount.add" = "Добавить скидку";
+"payments.discount" = "Скидка";
+"payments.discount.percent" = "Процент";
+"payments.discount.remove" = "Убрать скидку";
+"payments.discount.summary" = "−%1$@ · к оплате %2$@";
+"result.discount" = "С учётом скидки %@";
+"summary.discount" = "Скидка: %@";

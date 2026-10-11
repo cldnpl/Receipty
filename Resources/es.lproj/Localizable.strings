@@ -172,3 +172,10 @@
 "currency.all" = "Todas las monedas";
 "summary.header" = "Receipty · %@";
 "settings.title" = "Ajustes";
+"payments.discount.add" = "Añadir un descuento";
+"payments.discount" = "Descuento";
+"payments.discount.percent" = "Porcentaje";
+"payments.discount.remove" = "Quitar el descuento";
+"payments.discount.summary" = "−%1$@ · se paga %2$@";
+"result.discount" = "Incluye un descuento de %@";
+"summary.discount" = "Descuento: %@";

@@ -26,6 +26,12 @@ struct BillItem: Identifiable, Hashable, Codable {
     var issue: Issue? = nil
 }
 
+/// Lo sconto sul totale: in percentuale ("10" = 10%) o in soldi ("5" = €5).
+enum DiscountMode: String, Codable {
+    case percent
+    case amount
+}
+
 /// Da dove arriva il conto: la schermata iniziale offre solo due strade,
 /// ma "Continua manualmente" dallo scanner porta a un conto a voci scritto a mano.
 enum BillSource: String, Codable {
@@ -69,12 +75,14 @@ struct Settlement: Codable, Hashable {
     var transfers: [Transfer]
     var changeSplit: [ChangeShare] = []
     var currency = Currency(code: "EUR")
+    /// Lo sconto già tolto da `total` (0 se non c'era).
+    var discount: Int = 0
 
     var change: Int { changeSplit.reduce(0) { $0 + $1.cents } }
 }
 
 extension Settlement {
-    private enum CodingKeys: String, CodingKey { case total, lines, transfers, changeSplit, currency }
+    private enum CodingKeys: String, CodingKey { case total, lines, transfers, changeSplit, currency, discount }
 
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -83,6 +91,7 @@ extension Settlement {
         transfers = try c.decode([Transfer].self, forKey: .transfers)
         changeSplit = try c.decodeIfPresent([ChangeShare].self, forKey: .changeSplit) ?? []
         currency = try c.decodeIfPresent(Currency.self, forKey: .currency) ?? Currency(code: "EUR")
+        discount = try c.decodeIfPresent(Int.self, forKey: .discount) ?? 0
     }
 }
 

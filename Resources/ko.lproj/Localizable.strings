@@ -172,3 +172,10 @@
 "currency.all" = "모든 통화";
 "summary.header" = "Receipty · %@";
 "settings.title" = "설정";
+"payments.discount.add" = "할인 추가";
+"payments.discount" = "할인";
+"payments.discount.percent" = "퍼센트";
+"payments.discount.remove" = "할인 삭제";
+"payments.discount.summary" = "−%1$@ · 결제 금액 %2$@";
+"result.discount" = "%@ 할인 포함";
+"summary.discount" = "할인: %@";

@@ -115,6 +115,19 @@ struct ResultView: View {
                 .padding(.top, 8)
                 .padding(.leading, 1)
 
+            if settlement.discount > 0 {
+                HStack(spacing: 6) {
+                    Image(systemName: "tag").font(.system(size: 12.5, weight: .semibold))
+                    Text(t("result.discount", Money.format(settlement.discount, currency)))
+                }
+                .textStyle(TextStyle(face: .semibold, size: 14))
+                .foregroundStyle(Palette.raspberry)
+                .padding(.horizontal, 14)
+                .frame(height: 32)
+                .background(Capsule().fill(Palette.pillFill))
+                .padding(.top, 12)
+            }
+
             if settlement.change > 0 {
                 SectionLabel(text: t("result.changeBack", Money.format(settlement.change, currency)))
                     .padding(.top, 22)
@@ -171,7 +184,11 @@ struct ResultView: View {
 
     private var summary: String {
         var lines = [t("summary.header", DateText.short(date)),
-                     t("summary.bill", Money.format(settlement.total, currency), settlement.lines.count), ""]
+                     t("summary.bill", Money.format(settlement.total, currency), settlement.lines.count)]
+        if settlement.discount > 0 {
+            lines.append(t("summary.discount", Money.format(settlement.discount, currency)))
+        }
+        lines.append("")
         if settlement.change > 0 {
             lines.append(t("summary.changeBack", Money.format(settlement.change, currency)))
             for share in settlement.changeSplit {

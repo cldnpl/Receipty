@@ -172,3 +172,10 @@
 "currency.all" = "Alle valuta's";
 "summary.header" = "Receipty · %@";
 "settings.title" = "Instellingen";
+"payments.discount.add" = "Korting toevoegen";
+"payments.discount" = "Korting";
+"payments.discount.percent" = "Percentage";
+"payments.discount.remove" = "Korting verwijderen";
+"payments.discount.summary" = "−%1$@ · te betalen %2$@";
+"result.discount" = "Inclusief %@ korting";
+"summary.discount" = "Korting: %@";

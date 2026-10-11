@@ -30,6 +30,20 @@ enum SettlementEngine {
         return roundPreservingSum(exact, order: people, total: total, priority: paid, unit: unit)
     }
 
+    /// Lo sconto sul conto a voci: ogni quota cala in proporzione a quanto ha consumato,
+    /// e la somma delle quote resta esattamente il totale scontato.
+    static func applyDiscount(_ shares: [UUID: Int], order: [UUID], subtotal: Int, discount: Int, unit: Int = 1) -> [UUID: Int] {
+        let assigned = shares.values.reduce(0, +)
+        guard discount > 0, subtotal > 0, assigned > 0 else { return shares }
+        let ratio = Double(subtotal - discount) / Double(subtotal)
+        // Con voci ancora da assegnare (mentre si assegnano) lo sconto tocca solo la parte assegnata.
+        let target = assigned == subtotal
+            ? subtotal - discount
+            : Int((Double(assigned) * ratio / Double(unit)).rounded()) * unit
+        let exact = shares.mapValues { Double($0) * ratio }
+        return roundPreservingSum(exact, order: order, total: target, priority: [:], unit: unit)
+    }
+
     /// - Parameter unit: il passo in centesimi (1, oppure 100 per le valute senza decimali:
     ///   1000 yen in 3 fanno 334 + 333 + 333, non 333,33).
     static func roundPreservingSum(_ exact: [UUID: Double], order: [UUID], total: Int, priority: [UUID: Int], unit: Int = 1) -> [UUID: Int] {

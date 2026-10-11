@@ -147,6 +147,82 @@ final class SettlementTests: XCTestCase {
         XCTAssertEqual(Set(Currency.all.map(\.code)).count, Currency.all.count)
     }
 
+    // MARK: Sconto
+
+    /// €80 in 4 con il 10% di sconto: si pagano €72, €18 a testa.
+    func testPercentDiscountOnEqualSplit() {
+        let draft = BillDraft(source: .equal, currency: Currency(code: "EUR"))
+        draft.equalTotalText = "80"
+        ["Anna", "Bea", "Cri", "Dani"].forEach { draft.addPerson(named: $0) }
+        draft.hasDiscount = true
+        draft.discountText = "10"
+        XCTAssertEqual(draft.subtotal, 8000)
+        XCTAssertEqual(draft.discount, 800)
+        XCTAssertEqual(draft.total, 7200)
+        XCTAssertTrue(draft.owed.values.allSatisfy { $0 == 1800 })
+        draft.paidText[draft.people[0].id] = "72"
+        let s = draft.settlement()
+        XCTAssertEqual(s.total, 7200)
+        XCTAssertEqual(s.discount, 800)
+        XCTAssertEqual(s.change, 0)
+        XCTAssertEqual(s.transfers.map(\.cents), [1800, 1800, 1800])
+    }
+
+    /// Lo scontrino del mockup (€40) con €4 di sconto: ogni quota cala del 10%, la somma fa €36.
+    func testAmountDiscountOnItemizedBill() {
+        let p = people("Cla", "Marco", "Giulia", "Luca")
+        let (cla, marco, giulia, luca) = (p[0].id, p[1].id, p[2].id, p[3].id)
+        let draft = BillDraft(source: .scan, currency: Currency(code: "EUR"))
+        draft.people = p
+        draft.items = [
+            BillItem(name: "Pizza margherita", cents: 800, assignees: [cla]),
+            BillItem(name: "Carbonara", cents: 1200, assignees: [marco]),
+            BillItem(name: "Birra media", cents: 500, assignees: [cla, giulia]),
+            BillItem(name: "Acqua naturale", cents: 200, assignees: [luca]),
+            BillItem(name: "Tiramisù", cents: 600, assignees: [giulia]),
+            BillItem(name: "Coperto", cents: 700, assignees: [cla, marco, giulia, luca]),
+        ]
+        draft.hasDiscount = true
+        draft.discountMode = .amount
+        draft.discountText = "4"
+        let owed = draft.owed
+        XCTAssertEqual(owed.values.reduce(0, +), 3600)
+        XCTAssertEqual(owed[marco], 1238)
+        XCTAssertTrue([1102, 1103].contains(owed[cla]!))
+        XCTAssertTrue([922, 923].contains(owed[giulia]!))
+        XCTAssertTrue([337, 338].contains(owed[luca]!))
+        draft.paidText[cla] = "36"
+        let s = draft.settlement()
+        XCTAssertEqual(s.total, 3600)
+        XCTAssertEqual(s.discount, 400)
+        XCTAssertEqual(s.transfers.map(\.cents).reduce(0, +), 3600 - s.lines[0].owed)
+    }
+
+    /// Lo sconto non va mai oltre il totale, né in soldi né in percentuale.
+    func testDiscountNeverExceedsTotal() {
+        let draft = BillDraft(source: .equal, currency: Currency(code: "EUR"))
+        draft.equalTotalText = "52"
+        draft.hasDiscount = true
+        draft.discountMode = .amount
+        draft.discountText = "100"
+        XCTAssertEqual(draft.total, 0)
+        draft.discountMode = .percent
+        draft.discountText = "150"
+        XCTAssertEqual(draft.total, 0)
+        draft.hasDiscount = false
+        XCTAssertEqual(draft.total, 5200)
+    }
+
+    /// Con lo yen lo sconto si arrotonda a yen interi: ¥999 al 15% fa ¥150 di sconto.
+    func testDiscountRoundsToWholeYen() {
+        let draft = BillDraft(source: .equal, currency: Currency(code: "JPY"))
+        draft.equalTotalText = "999"
+        draft.hasDiscount = true
+        draft.discountText = "15"
+        XCTAssertEqual(draft.discount, 15_000)
+        XCTAssertEqual(draft.total, 84_900)
+    }
+
     // MARK: Resto
 
     private func equalBill(total: String, _ payers: [(String, String)], others: [String]) -> Settlement {

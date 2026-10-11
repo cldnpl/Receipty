@@ -172,3 +172,10 @@
 "currency.all" = "所有货币";
 "summary.header" = "Receipty · %@";
 "settings.title" = "设置";
+"payments.discount.add" = "添加折扣";
+"payments.discount" = "折扣";
+"payments.discount.percent" = "百分比";
+"payments.discount.remove" = "移除折扣";
+"payments.discount.summary" = "−%1$@ · 实付 %2$@";
+"result.discount" = "已含 %@ 折扣";
+"summary.discount" = "折扣：%@";

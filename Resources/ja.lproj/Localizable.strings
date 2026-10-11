@@ -172,3 +172,10 @@
 "currency.all" = "すべての通貨";
 "summary.header" = "Receipty · %@";
 "settings.title" = "設定";
+"payments.discount.add" = "割引を追加";
+"payments.discount" = "割引";
+"payments.discount.percent" = "パーセント";
+"payments.discount.remove" = "割引を削除";
+"payments.discount.summary" = "−%1$@ · 支払い %2$@";
+"result.discount" = "%@の割引込み";
+"summary.discount" = "割引: %@";
