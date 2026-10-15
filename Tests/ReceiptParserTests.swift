@@ -112,6 +112,61 @@ final class ReceiptParserTests: XCTestCase {
         XCTAssertEqual(parsed.total, 3628)
     }
 
+    func testShopNameIsNotAnItem() {
+        // Insegna e ragione sociale sopra le voci, con il primo prezzo andato a capo sotto il nome del locale.
+        let parsed = ReceiptParser.parse(lines([
+            ("OSTERIA AL PONTE", nil),
+            ("", "4,00"),
+            ("di Rossi Mario & C. s.n.c.", nil),
+            ("", "3,00"),
+            ("PIZZERIA BELLA NAPOLI SRL", "2,00"),
+            ("Cap. Soc. 10.000,00", nil),
+            ("Corso Umberto 12 Napoli", "1,00"),
+            ("Margherita", "7,00"),
+            ("Birra", "4,00"),
+            ("TOTALE", "11,00"),
+        ]))
+        XCTAssertEqual(parsed.items.map(\.name), ["Margherita", "Birra"])
+    }
+
+    func testFirstLineIsTheShopName() {
+        // Nessuna parola che dica "locale": è comunque la prima riga, e lì c'è l'insegna.
+        let parsed = ReceiptParser.parse(lines([
+            ("LA LANTERNA", nil),
+            ("", "8,00"),
+            ("MARGHERITA", nil),
+            ("", "9,50"),
+            ("TOTALE", "17,50"),
+        ]))
+        XCTAssertEqual(parsed.items.map(\.name), ["Margherita"])
+    }
+
+    func testLargeOrCenteredHeaderIsNotAnItem() {
+        // L'insegna a doppia altezza e lo slogan centrato, finiti sulla riga di un prezzo.
+        var frags = [
+            OCRFragment(text: "JOE'S DINER", confidence: 1, box: CGRect(x: 150, y: 0, width: 220, height: 56)),
+            OCRFragment(text: "5.00", confidence: 1, box: CGRect(x: 400, y: 14, width: 70, height: 24)),
+            OCRFragment(text: "Best burgers in town", confidence: 1, box: CGRect(x: 130, y: 70, width: 260, height: 24)),
+            OCRFragment(text: "3.00", confidence: 1, box: CGRect(x: 400, y: 72, width: 70, height: 24)),
+        ]
+        frags += lines([("Cheeseburger", "12.50"), ("Fries", "4.00"), ("Protein bar", "2.50")]).map { f in
+            var f = f
+            f.box.origin.y += 120
+            return f
+        }
+        let parsed = ReceiptParser.parse(frags)
+        XCTAssertEqual(parsed.items.map(\.name), ["Cheeseburger", "Fries", "Protein bar"])
+    }
+
+    func testProductNamedLikeAShopIsKept() {
+        // "Bar" basta a riconoscere l'insegna solo senza prezzo: con il prezzo è un prodotto.
+        let parsed = ReceiptParser.parse(lines([
+            ("Protein bar", "2,50"),
+            ("Caffè", "1,20"),
+        ]))
+        XCTAssertEqual(parsed.items.map(\.name), ["Protein bar", "Caffè"])
+    }
+
     func testOtherCurrencies() {
         let parsed = ReceiptParser.parse(lines([
             ("Burger", "$12.50"),

@@ -145,6 +145,67 @@ class ReceiptParserTests {
     }
 
     @Test
+    fun shopNameIsNotAnItem() {
+        // Insegna e ragione sociale sopra le voci, con il primo prezzo andato a capo sotto il nome del locale.
+        val parsed = ReceiptParser.parse(
+            lines(
+                listOf(
+                    "OSTERIA AL PONTE" to null,
+                    "" to "4,00",
+                    "di Rossi Mario & C. s.n.c." to null,
+                    "" to "3,00",
+                    "PIZZERIA BELLA NAPOLI SRL" to "2,00",
+                    "Cap. Soc. 10.000,00" to null,
+                    "Corso Umberto 12 Napoli" to "1,00",
+                    "Margherita" to "7,00",
+                    "Birra" to "4,00",
+                    "TOTALE" to "11,00",
+                )
+            )
+        )
+        assertEquals(listOf("Margherita", "Birra"), parsed.items.map { it.name })
+    }
+
+    @Test
+    fun firstLineIsTheShopName() {
+        // Nessuna parola che dica "locale": è comunque la prima riga, e lì c'è l'insegna.
+        val parsed = ReceiptParser.parse(
+            lines(
+                listOf(
+                    "LA LANTERNA" to null,
+                    "" to "8,00",
+                    "MARGHERITA" to null,
+                    "" to "9,50",
+                    "TOTALE" to "17,50",
+                )
+            )
+        )
+        assertEquals(listOf("Margherita"), parsed.items.map { it.name })
+    }
+
+    @Test
+    fun largeOrCenteredHeaderIsNotAnItem() {
+        // L'insegna a doppia altezza e lo slogan centrato, finiti sulla riga di un prezzo.
+        val frags = mutableListOf(
+            OCRFragment("JOE'S DINER", 1f, box = Box(150f, 0f, 220f, 56f)),
+            OCRFragment("5.00", 1f, box = Box(400f, 14f, 70f, 24f)),
+            OCRFragment("Best burgers in town", 1f, box = Box(130f, 70f, 260f, 24f)),
+            OCRFragment("3.00", 1f, box = Box(400f, 72f, 70f, 24f)),
+        )
+        frags += lines(listOf("Cheeseburger" to "12.50", "Fries" to "4.00", "Protein bar" to "2.50"))
+            .map { it.copy(box = it.box.copy(top = it.box.top + 120f)) }
+        val parsed = ReceiptParser.parse(frags)
+        assertEquals(listOf("Cheeseburger", "Fries", "Protein bar"), parsed.items.map { it.name })
+    }
+
+    @Test
+    fun productNamedLikeAShopIsKept() {
+        // "Bar" basta a riconoscere l'insegna solo senza prezzo: con il prezzo è un prodotto.
+        val parsed = ReceiptParser.parse(lines(listOf("Protein bar" to "2,50", "Caffè" to "1,20")))
+        assertEquals(listOf("Protein bar", "Caffè"), parsed.items.map { it.name })
+    }
+
+    @Test
     fun otherCurrencies() {
         val parsed = ReceiptParser.parse(
             lines(

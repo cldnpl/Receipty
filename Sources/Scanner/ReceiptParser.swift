@@ -98,8 +98,10 @@ enum ReceiptParser {
         var itemsEnded = false
         var pendingName: (text: String, confidence: Float)?
         var pendingQuantity: (qty: Int, unit: Int)?
+        let layout = Layout(lines)
+        let firstLine = lines.firstIndex { $0.text.contains(where: \.isLetter) }
 
-        for line in lines {
+        for (index, line) in lines.enumerated() {
             let raw = line.text.trimmingCharacters(in: .whitespaces)
             let folded = fold(raw)
             let price = trailingAmount(in: line)
@@ -120,9 +122,15 @@ enum ReceiptParser {
                 pendingQuantity = q
                 continue
             }
+            // Sopra la prima voce c'è l'intestazione: insegna, ragione sociale, indirizzo. Non sono prodotti.
+            if items.isEmpty, isShopHeader(line, folded: folded, priced: price != nil, layout: layout) {
+                pendingName = nil
+                continue
+            }
             guard var p = price else {
                 // Un nome senza prezzo: può essere una voce lunga andata a capo.
-                if looksLikeName(raw) { pendingName = (raw, minConfidence(line.fragments)) } else { pendingName = nil }
+                // La prima riga dello scontrino no: lì c'è il nome del locale.
+                if looksLikeName(raw), index != firstLine { pendingName = (raw, minConfidence(line.fragments)) } else { pendingName = nil }
                 continue
             }
 
@@ -166,6 +174,77 @@ enum ReceiptParser {
         }
 
         return ParsedReceipt(items: items, total: total ?? subtotal)
+    }
+
+    // MARK: Intestazione
+
+    /// Dove stanno le voci: margini e altezza del testo delle righe "nome … prezzo".
+    /// L'insegna del locale di solito è centrata e scritta più grande.
+    struct Layout {
+        var left: CGFloat
+        var right: CGFloat
+        var textHeight: CGFloat
+
+        init?(_ lines: [Line]) {
+            let priced = lines.filter { line in
+                guard let amount = trailingAmount(in: line), amount.rest.contains(where: \.isLetter) else { return false }
+                let folded = fold(line.text)
+                return !isTotalLine(folded) && !isNoise(folded)
+            }
+            guard priced.count >= 2 else { return nil }
+            func median(_ values: [CGFloat]) -> CGFloat { values.sorted()[values.count / 2] }
+            left = median(priced.map { $0.fragments[0].box.minX })
+            right = median(priced.map { $0.fragments.map(\.box.maxX).max()! })
+            textHeight = median(priced.map { $0.fragments[0].box.height })
+            guard right - left > 0, textHeight > 0 else { return nil }
+        }
+
+        /// Contano solo le parole: un prezzo finito sulla stessa riga non dice com'è scritta.
+        private func words(_ line: Line) -> [CGRect] {
+            line.fragments.filter { $0.text.filter(\.isLetter).count >= 2 }.map(\.box)
+        }
+
+        /// Scritta più grande delle voci: le insegne sono a doppia altezza o in un carattere da titolo.
+        func isLarge(_ line: Line) -> Bool {
+            (words(line).map(\.height).max() ?? 0) > textHeight * 1.6
+        }
+
+        /// Centrata: non parte dal margine sinistro delle voci e non arriva alla colonna dei prezzi.
+        func isCentered(_ line: Line) -> Bool {
+            let boxes = words(line)
+            guard let minX = boxes.map(\.minX).min(), let maxX = boxes.map(\.maxX).max() else { return false }
+            let span = right - left
+            return minX > left + span * 0.08 && maxX < right - span * 0.08
+                && abs((minX + maxX) / 2 - (left + right) / 2) < span * 0.08
+        }
+    }
+
+    /// Che tipo di posto è: nell'intestazione basta questo a dire che la riga è l'insegna.
+    private static let shopWords: Set<String> = [
+        "ristorante", "trattoria", "pizzeria", "osteria", "taverna", "locanda", "enoteca", "bar", "caffetteria",
+        "pasticceria", "gelateria", "panificio", "macelleria", "salumeria", "alimentari", "supermercato",
+        "ipermercato", "market", "supermarket", "minimarket", "bistrot", "bistro", "restaurant", "pub", "tavern",
+        "diner", "cafe", "brasserie", "steakhouse", "bakery", "deli", "store", "shop", "restaurante", "cafeteria",
+        "panaderia", "boulangerie", "gasthaus", "gasthof", "baeckerei", "backerei", "eetcafe", "lokanta",
+    ]
+    /// Indirizzo e dati del documento: in testa allo scontrino non sono mai una voce, prezzo o no.
+    private static let headerWords: Set<String> = [
+        "via", "viale", "piazza", "piazzale", "corso", "largo", "vicolo", "strada", "contrada", "localita",
+        "street", "road", "avenue", "boulevard", "blvd", "calle", "avenida", "rue", "strasse", "straat",
+        "tavolo", "table", "cameriere", "server", "scontrino", "ricevuta", "fattura", "receipt", "invoice",
+        "benvenuti", "welcome", "cliente", "customer",
+    ]
+    /// Forma societaria: "S.r.l.", "SNC", "S.p.A.", "Ltd", "GmbH"...
+    private static let legalForm = try! Regex(#"(^|[^a-z])(s\.?\s?r\.?\s?l|s\.?\s?n\.?\s?c|s\.?\s?a\.?\s?s|s\.?\s?p\.?\s?a|ltd|llc|inc|gmbh|sarl|plc)\.?([^a-z]|$)"#)
+
+    /// Una riga dell'intestazione che è l'insegna, la ragione sociale o l'indirizzo del locale.
+    /// Su una riga con prezzo servono segni forti (scritta grande o centrata, forma societaria, indirizzo):
+    /// "Bar" da solo non basta, una "Protein bar" è un prodotto.
+    static func isShopHeader(_ line: Line, folded: String, priced: Bool, layout: Layout?) -> Bool {
+        let words = folded.split(whereSeparator: { !$0.isLetter }).map(String.init)
+        if let layout, layout.isLarge(line) || layout.isCentered(line) { return true }
+        if folded.firstMatch(of: legalForm) != nil || words.contains(where: headerWords.contains) { return true }
+        return !priced && words.contains(where: shopWords.contains)
     }
 
     // MARK: Importi
@@ -353,7 +432,8 @@ enum ReceiptParser {
                                   "mastercard", "credito", "ticket", "buono", "matricola", "documento", "cassa",
                                   "cassiere", "operatore", "ore", "data", "grazie", "arrivederci", "pezzi",
                                   "articoli", "descrizione", "prezzo", "rt", "cf"]
-        let phrases = ["p.iva", "p. iva", "c.f.", "cod. fisc", "scontrino n", "doc.", "www", "http"]
+        let phrases = ["p.iva", "p. iva", "c.f.", "cod. fisc", "scontrino n", "doc.", "www", "http",
+                       "cap. soc", "cap.soc", "capitale soc", "reg. imp", "r.e.a", "c.c.i.a.a"]
         let lineWords = folded.split(whereSeparator: { !$0.isLetter }).map(String.init)
         if lineWords.contains(where: words.contains) { return true }
         if phrases.contains(where: folded.contains) { return true }

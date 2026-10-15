@@ -16,7 +16,7 @@ Open this `android` folder in Android Studio and run the `app` configuration.
   (`sheet`, `scan`, `review`, `people`, `assign`, `payments`, `manual`, `result`, `change`,
   `changeresult`, `settings`, `currency`, `language`, `tutorial`, `onboarding`, `empty`).
 
-Application id `com.cldnpl.whopays`, version 1.2, Android 8.0+.
+Application id `com.cldnpl.whopays`, version 1.3, Android 8.0+.
 
 When the project sits in an iCloud-synced Desktop or Documents folder, Gradle writes its build
 output to `~/.gradle-builds/Receipty` instead: iCloud duplicates generated files ("file 2.xml")

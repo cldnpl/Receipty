@@ -121,8 +121,10 @@ object ReceiptParser {
         var itemsEnded = false
         var pendingName: Pair<String, Float>? = null
         var pendingQuantity: Pair<Int, Int>? = null
+        val layout = Layout.of(lines, minorDigits)
+        val firstLine = lines.indexOfFirst { line -> line.text.any { it.isLetter() } }
 
-        for (line in lines) {
+        for ((index, line) in lines.withIndex()) {
             val raw = line.text.trim()
             val folded = fold(raw)
             val price = trailingAmount(line, minorDigits)
@@ -144,9 +146,15 @@ object ReceiptParser {
                 pendingQuantity = q
                 continue
             }
+            // Sopra la prima voce c'è l'intestazione: insegna, ragione sociale, indirizzo. Non sono prodotti.
+            if (items.isEmpty() && isShopHeader(line, folded, priced = price != null, layout = layout)) {
+                pendingName = null
+                continue
+            }
             if (price == null) {
                 // Un nome senza prezzo: può essere una voce lunga andata a capo.
-                pendingName = if (looksLikeName(raw)) raw to minConfidence(line.fragments) else null
+                // La prima riga dello scontrino no: lì c'è il nome del locale.
+                pendingName = if (looksLikeName(raw) && index != firstLine) raw to minConfidence(line.fragments) else null
                 continue
             }
             var p = price
@@ -194,6 +202,80 @@ object ReceiptParser {
         }
 
         return ParsedReceipt(items, total ?: subtotal)
+    }
+
+    // Intestazione
+
+    /**
+     * Dove stanno le voci: margini e altezza del testo delle righe "nome … prezzo".
+     * L'insegna del locale di solito è centrata e scritta più grande.
+     */
+    class Layout private constructor(val left: Float, val right: Float, val textHeight: Float) {
+        companion object {
+            fun of(lines: List<Line>, minorDigits: Int = 2): Layout? {
+                val priced = lines.filter { line ->
+                    val amount = trailingAmount(line, minorDigits)
+                    val folded = fold(line.text)
+                    amount != null && amount.rest.any { it.isLetter() } && !isTotalLine(folded) && !isNoise(folded)
+                }
+                if (priced.size < 2) return null
+                fun median(values: List<Float>) = values.sorted()[values.size / 2]
+                val left = median(priced.map { it.fragments[0].box.left })
+                val right = median(priced.map { line -> line.fragments.maxOf { it.box.right } })
+                val textHeight = median(priced.map { it.fragments[0].box.height })
+                if (right - left <= 0f || textHeight <= 0f) return null
+                return Layout(left, right, textHeight)
+            }
+        }
+
+        /** Contano solo le parole: un prezzo finito sulla stessa riga non dice com'è scritta. */
+        private fun words(line: Line) = line.fragments.filter { f -> f.text.count { it.isLetter() } >= 2 }.map { it.box }
+
+        /** Scritta più grande delle voci: le insegne sono a doppia altezza o in un carattere da titolo. */
+        fun isLarge(line: Line): Boolean = (words(line).maxOfOrNull { it.height } ?: 0f) > textHeight * 1.6f
+
+        /** Centrata: non parte dal margine sinistro delle voci e non arriva alla colonna dei prezzi. */
+        fun isCentered(line: Line): Boolean {
+            val boxes = words(line)
+            val minX = boxes.minOfOrNull { it.left } ?: return false
+            val maxX = boxes.maxOf { it.right }
+            val span = right - left
+            return minX > left + span * 0.08f && maxX < right - span * 0.08f &&
+                abs((minX + maxX) / 2 - (left + right) / 2) < span * 0.08f
+        }
+    }
+
+    /** Che tipo di posto è: nell'intestazione basta questo a dire che la riga è l'insegna. */
+    private val shopWords = setOf(
+        "ristorante", "trattoria", "pizzeria", "osteria", "taverna", "locanda", "enoteca", "bar", "caffetteria",
+        "pasticceria", "gelateria", "panificio", "macelleria", "salumeria", "alimentari", "supermercato",
+        "ipermercato", "market", "supermarket", "minimarket", "bistrot", "bistro", "restaurant", "pub", "tavern",
+        "diner", "cafe", "brasserie", "steakhouse", "bakery", "deli", "store", "shop", "restaurante", "cafeteria",
+        "panaderia", "boulangerie", "gasthaus", "gasthof", "baeckerei", "backerei", "eetcafe", "lokanta",
+    )
+
+    /** Indirizzo e dati del documento: in testa allo scontrino non sono mai una voce, prezzo o no. */
+    private val headerWords = setOf(
+        "via", "viale", "piazza", "piazzale", "corso", "largo", "vicolo", "strada", "contrada", "localita",
+        "street", "road", "avenue", "boulevard", "blvd", "calle", "avenida", "rue", "strasse", "straat",
+        "tavolo", "table", "cameriere", "server", "scontrino", "ricevuta", "fattura", "receipt", "invoice",
+        "benvenuti", "welcome", "cliente", "customer",
+    )
+
+    /** Forma societaria: "S.r.l.", "SNC", "S.p.A.", "Ltd", "GmbH"... */
+    private val legalForm =
+        Regex("(^|[^a-z])(s\\.?\\s?r\\.?\\s?l|s\\.?\\s?n\\.?\\s?c|s\\.?\\s?a\\.?\\s?s|s\\.?\\s?p\\.?\\s?a|ltd|llc|inc|gmbh|sarl|plc)\\.?([^a-z]|$)")
+
+    /**
+     * Una riga dell'intestazione che è l'insegna, la ragione sociale o l'indirizzo del locale.
+     * Su una riga con prezzo servono segni forti (scritta grande o centrata, forma societaria, indirizzo):
+     * "Bar" da solo non basta, una "Protein bar" è un prodotto.
+     */
+    fun isShopHeader(line: Line, folded: String, priced: Boolean, layout: Layout?): Boolean {
+        val lineWords = words(folded)
+        if (layout != null && (layout.isLarge(line) || layout.isCentered(line))) return true
+        if (legalForm.containsMatchIn(folded) || lineWords.any { it in headerWords }) return true
+        return !priced && lineWords.any { it in shopWords }
     }
 
     // Importi
@@ -413,7 +495,10 @@ object ReceiptParser {
         "cassiere", "operatore", "ore", "data", "grazie", "arrivederci", "pezzi",
         "articoli", "descrizione", "prezzo", "rt", "cf",
     )
-    private val noisePhrases = listOf("p.iva", "p. iva", "c.f.", "cod. fisc", "scontrino n", "doc.", "www", "http")
+    private val noisePhrases = listOf(
+        "p.iva", "p. iva", "c.f.", "cod. fisc", "scontrino n", "doc.", "www", "http",
+        "cap. soc", "cap.soc", "capitale soc", "reg. imp", "r.e.a", "c.c.i.a.a",
+    )
     private val datePattern = Regex("\\d{1,2}[/\\-.]\\d{1,2}[/\\-.]\\d{2,4}")
     private val timePattern = Regex("\\b\\d{1,2}:\\d{2}\\b")
 
