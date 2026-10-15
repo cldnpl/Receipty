@@ -17,11 +17,25 @@ solo in inglese: aggiungere le localizzazioni della scheda è un lavoro a parte,
 | Privacy Policy URL | https://github.com/cldnpl/Receipty/blob/main/PRIVACY_POLICY.md |
 | License agreement | Apple's Standard EULA (il nostro `EULA.md` la richiama) |
 
+## Version 1.4
+
+Description, keywords, URL e il resto della scheda restano quelli della 1.1.
+
+### What's New in This Version (max 4000, 198)
+
+```
+Smarter receipt scanning: the restaurant or shop name, its address and company details printed at the top of the receipt no longer show up as items. Only the products you ordered end up in the list.
+```
+
+### Promotional text (max 170, 157)
+
+Uguale alla 1.1.
+
 ## Version 1.3
 
 Description, keywords, URL e il resto della scheda restano quelli della 1.1.
 
-### What's New in This Version (max 4000, 517)
+### What's New in This Version (max 4000, 382)
 
 ```
 Discounts, sorted.
@@ -29,7 +43,6 @@ Discounts, sorted.
 • Got a discount on the bill? In "Who paid?" tap "Add a discount" and enter it as a percentage or an amount.
 • On an itemized receipt, everyone's share goes down in proportion to what they had. On an equal split, the discounted total is shared evenly.
 • The result shows the discount that was applied, and it's included in the summary you copy to the group chat.
-• Smarter scanning: the restaurant or shop name, its address and company details at the top of the receipt no longer show up as items.
 ```
 
 ### Promotional text (max 170, 157)
